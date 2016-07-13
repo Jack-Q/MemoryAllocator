@@ -7,7 +7,7 @@ class AllocatorSequentialFirstImpl extends AllocatorSequential {
     }
 
     protected int pickFreeBlock(int size) {
-        System.out.println("首先适配");
+        System.out.println("(测试信息)首先适配");
 
         if (freelist == null) return -1;  //无空闲块
         int freeStart = freelist.getPos();

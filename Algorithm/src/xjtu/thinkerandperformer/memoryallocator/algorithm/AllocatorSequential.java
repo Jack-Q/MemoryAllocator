@@ -24,10 +24,6 @@ abstract class AllocatorSequential implements AllocatorADT {
     MemHandle freelist;         // 指向可利用空间表
 
     /*构造方法*/
-    AllocatorSequential() {
-    }
-
-    /*构造方法*/
     AllocatorSequential(int size) {
         if (size >= 6) init(size);
     }
