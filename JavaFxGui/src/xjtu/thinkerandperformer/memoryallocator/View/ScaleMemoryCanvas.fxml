@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+
+
+<?import javafx.scene.control.Label?>
+<Label xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="xjtu.thinkerandperformer.memoryallocator.Controller.ScaleMemoryCanvasController"
+       fx:id="container"
+prefHeight="600" prefWidth="400">
+    <graphic>
+        <Canvas height="200.0" width="200.0" fx:id="canvas"/>
+    </graphic>
+</Label>
