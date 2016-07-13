@@ -1,5 +1,10 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.InsufficientMemoryPoolException;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.InsufficientVariableSizeException;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotAssignedException;
+
 abstract class AllocatorSequential implements AllocatorADT {
 
     protected static final int START_TAG = 0;   // Start tag offset 偏移
@@ -19,13 +24,15 @@ abstract class AllocatorSequential implements AllocatorADT {
     protected static final int MIN_REQUEST = 2; // Smallest data request
     protected static final int MAX_SHORTINT = 32767;
     protected static final int MIN_SHORTINT = -32768;
+    protected static final int MAX_MEMPOOLSIZE = 32767;
 
     short[] memPool;             // 存储池
     MemHandle freelist;         // 指向可利用空间表
 
     /*构造方法*/
-    AllocatorSequential(int size) {
-        if (size >= 6) init(size);
+    AllocatorSequential(int size) throws NumberOutOfBoundsException {
+        if (size > MAX_MEMPOOLSIZE) throw new NumberOutOfBoundsException();
+        init(size >= 6 ? size : 6);
     }
 
     /*初始化存储池*/
@@ -41,14 +48,12 @@ abstract class AllocatorSequential implements AllocatorADT {
 
     /*为变量申请空间*/
     @Override
-    public Variable newVariable(String variableName, int size) {
+    public Variable newVariable(String variableName, int size) throws InsufficientMemoryPoolException {
+        if (size > MAX_MEMPOOLSIZE) throw new InsufficientMemoryPoolException();
         size = (size < MIN_REQUEST) ? MIN_REQUEST : size;
 
-        int start = pickFreeBlock(size); //寻找空闲块 这里应该要有3种方法 顺序 最佳 最差
-        if (start == -1) {
-            System.out.println("空间不足！");
-            return null; //未找到足够大的空闲块，就返回-1这个不存在的下标。此处可以考虑添加错误处理
-        }
+        int start = pickFreeBlock(size); //寻找空闲块
+        if (start == -1) throw new InsufficientMemoryPoolException();
 
         if (memPool[start + FULL_SIZE] > (size + RES_OVERHEAD)) {  //？为何要加上overhead？空闲块的overhead不是有6个吗 肯定够用了啊
             // Fix up the remaining free space
@@ -91,13 +96,11 @@ abstract class AllocatorSequential implements AllocatorADT {
 
     /*向变量存储空间写入数据*/
     @Override
-    public boolean write(Variable variable, String value) {
+    public boolean write(Variable variable, String value) throws InsufficientVariableSizeException {
         int startPos = variable.getHandle().getPos();//该变量在存储池中的起点位置
+        if (memPool[startPos + FULL_SIZE] < value.length()) throw new InsufficientVariableSizeException();
 
-        if (memPool[startPos + FULL_SIZE] < value.length()) {
-            System.out.println("要写入的值的长度超限！");
-            return false;//要写入的值的长度超限
-        } else {
+        else {
             memPool[startPos + USER_SIZE] = (short) value.length();
             for (int i = 0; i < value.length(); i++)
                 memPool[startPos + DATA_POS + i] = (short) value.charAt(i);
@@ -107,8 +110,9 @@ abstract class AllocatorSequential implements AllocatorADT {
 
     /*从变量存储空间读数据*/
     @Override
-    public String read(Variable variable) {
+    public String read(Variable variable) throws VariableNotAssignedException {
         int startPos = variable.getHandle().getPos();//该变量在存储池中的起点位置
+        if (memPool[startPos + USER_SIZE] == 0) throw new VariableNotAssignedException();
 
         int length = memPool[startPos + USER_SIZE];
         int startData = startPos + DATA_POS;

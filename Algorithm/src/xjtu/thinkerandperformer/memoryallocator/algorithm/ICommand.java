@@ -1,7 +1,9 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.*;
+
 interface ICommand {
-    void invoke(MemManager memManager);
+    void invoke(MemManager memManager) throws MemoryManagerException;
 
     String getName();
 }
@@ -14,7 +16,7 @@ class InitCommand implements ICommand {
     }
 
     @Override
-    public void invoke(MemManager memManager) {
+    public void invoke(MemManager memManager) throws NumberOutOfBoundsException {
         memManager.init(memPoolSize);
     }
 
@@ -34,7 +36,7 @@ class NewCommand implements ICommand {
     }
 
     @Override
-    public void invoke(MemManager memManager) {
+    public void invoke(MemManager memManager) throws MemoryPoolUninitializedException, InsufficientMemoryPoolException, NumberOutOfBoundsException {
         memManager.newVariable(varName, varSize);
     }
 
@@ -52,7 +54,7 @@ class DeleteCommand implements ICommand {
     }
 
     @Override
-    public void invoke(MemManager memManager) {
+    public void invoke(MemManager memManager) throws MemoryPoolUninitializedException, VariableNotFoundException {
         memManager.deleteVariable(varName);
     }
 
@@ -71,7 +73,7 @@ class ReadCommand implements ICommand {
 
 
     @Override
-    public void invoke(MemManager memManager) {
+    public void invoke(MemManager memManager) throws VariableNotFoundException, VariableNotAssignedException, MemoryPoolUninitializedException {
         memManager.read(varName);
     }
 
@@ -92,7 +94,7 @@ class WriteCommand implements ICommand {
 
 
     @Override
-    public void invoke(MemManager memManager) {
+    public void invoke(MemManager memManager) throws MemoryPoolUninitializedException, InsufficientVariableSizeException, VariableNotFoundException {
         memManager.write(varName, value);
     }
 

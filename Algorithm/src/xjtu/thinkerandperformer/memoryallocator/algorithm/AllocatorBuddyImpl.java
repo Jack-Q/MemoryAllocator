@@ -8,12 +8,30 @@ import java.util.Arrays;
  * Buddy method is to allocate the least size of the power of 2 from memory,
  */
 
-
 class AllocatorBuddyImpl implements AllocatorADT {
 
+    //region magic numbers
+    // MEMORY STRUCTURE: [k] + [FreeList] + [Block]...[Block]
+    private static final int MEMORY_K_OFFSET = 0;
+    private static final int MEMORY_K_SIZE = 1;
+    private static final int MEMORY_FREELIST_OFFSET = MEMORY_K_OFFSET + MEMORY_K_SIZE;
+    private static final int MEMORY_FREELIST_SIZE = 30;
+    private static final int MEMORY_START_OFFSET = MEMORY_FREELIST_OFFSET + MEMORY_FREELIST_SIZE;
+    // BLOCK STRUCTURE: [Free/Used] + [Size] + [NextFree] + [PrevFree] + [MagicBegin]
+    //                  + [Content]...[Content] + [MagicEnd]
+    private static final int BLOCK_STATE_OFFSET = 0;
+    private static final int BLOCK_SIZE_OFFSET = 1;
+    private static final int BLOCK_NEXT_FREE_OFFSET = 2;
+    private static final int BLOCK_PREV_FREE_OFFSET = 3;
+    private static final int BLOCK_CONTENT_OFFSET = 5;
+    private static final int BLOCK_EXTRA_SIZE = 6;
+    private static final int MAGIC_BLOCK_BEGIN = 0xAAAA_AAAA;
+    private static final int MAGIC_BLOCK_END = 0x5555_5555;
+    private static final int MAGIC_BLOCK_FREE = 0xBBBB_BBBB;
+    private static final int MAGIC_BLOCK_USED = 0x3333_3333;
+    private static final int MAGIC_POSITION_NONE = -1;
+    private static final int MAGIC_STRING_END = -1;
     private int[] memoryPool;
-
-
     public AllocatorBuddyImpl(int size) {
         init(size);
     }
@@ -21,7 +39,6 @@ class AllocatorBuddyImpl implements AllocatorADT {
     @Override
     public void init(int size) {
         int k = leastPowerOf2(size);
-
         // Create memory pool
         int memoryAlignedSize = pow2(k);
         int memorySize = MEMORY_START_OFFSET + memoryAlignedSize;
@@ -34,6 +51,9 @@ class AllocatorBuddyImpl implements AllocatorADT {
         Arrays.fill(memoryPool, MEMORY_FREELIST_OFFSET, MEMORY_FREELIST_SIZE, MAGIC_POSITION_NONE);
         setFreeList(k, MEMORY_START_OFFSET);
     }
+    //endregion
+
+    //region constants
 
     @Override
     public Variable newVariable(String variableName, int size) {
@@ -144,35 +164,6 @@ class AllocatorBuddyImpl implements AllocatorADT {
         }
 
     }
-
-
-    //region magic numbers
-    // MEMORY STRUCTURE: [k] + [FreeList] + [Block]...[Block]
-    private static final int MEMORY_K_OFFSET = 0;
-    private static final int MEMORY_K_SIZE = 1;
-    private static final int MEMORY_FREELIST_OFFSET = MEMORY_K_OFFSET + MEMORY_K_SIZE;
-    private static final int MEMORY_FREELIST_SIZE = 30;
-    private static final int MEMORY_START_OFFSET = MEMORY_FREELIST_OFFSET + MEMORY_FREELIST_SIZE;
-
-    // BLOCK STRUCTURE: [Free/Used] + [Size] + [NextFree] + [PrevFree] + [MagicBegin]
-    //                  + [Content]...[Content] + [MagicEnd]
-    private static final int BLOCK_STATE_OFFSET = 0;
-    private static final int BLOCK_SIZE_OFFSET = 1;
-    private static final int BLOCK_NEXT_FREE_OFFSET = 2;
-    private static final int BLOCK_PREV_FREE_OFFSET = 3;
-    private static final int BLOCK_CONTENT_OFFSET = 5;
-    private static final int BLOCK_EXTRA_SIZE = 6;
-    //endregion
-
-    //region constants
-
-
-    private static final int MAGIC_BLOCK_BEGIN = 0xAAAA_AAAA;
-    private static final int MAGIC_BLOCK_END = 0x5555_5555;
-    private static final int MAGIC_BLOCK_FREE = 0xBBBB_BBBB;
-    private static final int MAGIC_BLOCK_USED = 0x3333_3333;
-    private static final int MAGIC_POSITION_NONE = -1;
-    private static final int MAGIC_STRING_END = -1;
 
     //endregion
 
