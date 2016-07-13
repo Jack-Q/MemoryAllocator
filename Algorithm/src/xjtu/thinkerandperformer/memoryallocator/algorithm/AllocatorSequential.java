@@ -5,6 +5,9 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.Insufficient
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotAssignedException;
 
+import java.util.Iterator;
+import java.util.List;
+
 abstract class AllocatorSequential implements AllocatorADT {
 
     protected static final int START_TAG = 0;   // Start tag offset 偏移
@@ -266,7 +269,8 @@ abstract class AllocatorSequential implements AllocatorADT {
 
     /*展示存储池*/
     @Override
-    public void show() {
+    public void show(AllocatorADT allocator, List<String> sortVariableList) {
+        Iterator<String> iterator = sortVariableList.iterator();
         System.out.println("-------------------------------------------------------------------------------");
         System.out.println("|    block   |  status  |   size   | used size | left pointer | right pointer |");
         System.out.println("-------------------------------------------------------------------------------");
@@ -290,6 +294,7 @@ abstract class AllocatorSequential implements AllocatorADT {
                     System.out.printf("  %5d    |", memPool[i + USER_SIZE]);
                     System.out.printf("              |", memPool[i + L_PTR]);
                     System.out.printf("               |", memPool[i + R_PTR]);
+                    System.out.printf(iterator.next());
                     System.out.println("\n-------------------------------------------------------------------------------");
                     i = endPos;
                 }

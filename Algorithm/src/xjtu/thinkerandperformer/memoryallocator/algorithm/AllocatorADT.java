@@ -4,6 +4,8 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.Insufficient
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.InsufficientVariableSizeException;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotAssignedException;
 
+import java.util.List;
+
 interface AllocatorADT {
 
     /*初始化存储池*/
@@ -22,5 +24,5 @@ interface AllocatorADT {
     void deleteVariable(Variable variable);
 
     /*展示存储池*/
-    void show();
+    void show(AllocatorADT allocator, List<String> sortVariableList);
 }

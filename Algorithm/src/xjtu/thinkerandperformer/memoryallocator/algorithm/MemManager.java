@@ -3,7 +3,9 @@ package xjtu.thinkerandperformer.memoryallocator.algorithm;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MemManager {
 
@@ -14,7 +16,8 @@ public class MemManager {
     void init(int size) throws NumberOutOfBoundsException {
         if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
 
-        allocator = new AllocatorSequentialBestImpl(size);
+        //allocator = new AllocatorSequentialBestImpl(size);
+        allocator = new AllocatorBuddyImpl(size);
         varMap = new HashMap<String, Variable>();
     }
 
@@ -59,6 +62,7 @@ public class MemManager {
     void show() throws MemoryPoolUninitializedException {
         if (allocator == null) throw new MemoryPoolUninitializedException();
 
-        allocator.show();
+        List<String> sortVariableList = varMap.entrySet().stream().sorted((e1, e2) -> e1.getValue().getHandle().getPos() - e2.getValue().getHandle().getPos()).map(e -> e.getKey()).collect(Collectors.toList());
+        allocator.show(allocator, sortVariableList);
     }
 }

@@ -1,6 +1,8 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This method implement a Buddy-Method for memory allocation.
@@ -32,6 +34,7 @@ class AllocatorBuddyImpl implements AllocatorADT {
     private static final int MAGIC_POSITION_NONE = -1;
     private static final int MAGIC_STRING_END = -1;
     private int[] memoryPool;
+
     public AllocatorBuddyImpl(int size) {
         init(size);
     }
@@ -140,7 +143,9 @@ class AllocatorBuddyImpl implements AllocatorADT {
     }
 
     @Override
-    public void show() {
+    public void show(AllocatorADT allocator, List<String> sortVariableList) {
+        Iterator<String> iterator = sortVariableList.iterator();
+
         System.out.println("FreeList");
         for (int k = 1; k <= getMemoryK(); k++) {
             System.out.print(String.format(" %2d: %4s;", k, getFreeList(k) == MAGIC_POSITION_NONE ? "NULL" : getFreeList(k)));
@@ -148,19 +153,20 @@ class AllocatorBuddyImpl implements AllocatorADT {
         }
         System.out.println();
         System.out.println("Memory Allocation: ");
-        show(MEMORY_START_OFFSET, getMemoryK());
+        show(MEMORY_START_OFFSET, getMemoryK(), iterator);
     }
 
-    private void show(int blockPosition, int k) {
+    private void show(int blockPosition, int k, Iterator<String> iterator) {
         if (getBlockSize(blockPosition) == k)
-            System.out.println(String.format("%5d(%5d) : %c : %d",
+            System.out.println(String.format("%5d(%5d) : %c : %d %s",
                     blockPosition,
                     blockPosition - MEMORY_START_OFFSET,
                     isFree(blockPosition) ? 'F' : 'B',
-                    k));
+                    k,
+                    isFree(blockPosition) ? "" : ": " + iterator.next()));
         else {
-            show(blockPosition, k - 1);
-            show(blockPosition + pow2(k - 1), k - 1);
+            show(blockPosition, k - 1, iterator);
+            show(blockPosition + pow2(k - 1), k - 1, iterator);
         }
 
     }
