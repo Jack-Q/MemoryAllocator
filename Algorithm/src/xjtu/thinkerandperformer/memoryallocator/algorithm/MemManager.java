@@ -9,9 +9,11 @@ public class MemManager {
     private Map<String, Variable> varMap;
 
     /*初始化存储池*/
-    void init(int size) {
-        allocator = new AllocatorBuddyImpl(size);
-        varMap = new HashMap<>();
+    void init(int size) throws NumberOutOfBoundsException {
+        if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
+
+        allocator = new AllocatorSequentialBestImpl(size);
+        varMap = new HashMap<String, Variable>();
     }
 
     /*为变量申请空间*/
