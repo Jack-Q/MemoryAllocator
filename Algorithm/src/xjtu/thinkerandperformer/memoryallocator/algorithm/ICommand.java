@@ -36,7 +36,7 @@ class NewCommand implements ICommand {
     }
 
     @Override
-    public void invoke(MemManager memManager) throws MemoryPoolUninitializedException, InsufficientMemoryPoolException, NumberOutOfBoundsException {
+    public void invoke(MemManager memManager) throws MemoryPoolUninitializedException, InsufficientMemoryPoolException, IllegalParameterException {
         memManager.newVariable(varName, varSize);
     }
 

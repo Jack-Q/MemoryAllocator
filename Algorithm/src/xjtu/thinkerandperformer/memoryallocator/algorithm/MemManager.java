@@ -22,10 +22,11 @@ public class MemManager {
     }
 
     /*为变量申请空间*/
-    void newVariable(String variableName, int size) throws MemoryPoolUninitializedException, NumberOutOfBoundsException, InsufficientMemoryPoolException {
+    void newVariable(String variableName, int size) throws MemoryPoolUninitializedException, IllegalParameterException, InsufficientMemoryPoolException {
         if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
         if (allocator == null) throw new MemoryPoolUninitializedException();
-        //variableName合法性判断
+        if (!variableName.matches("[A-Za-z_$][A-Za-z0-9_$]{0,6}")) throw new IllegalVariableNameException();
+        if (varMap.containsKey(variableName)) throw new IllegalParameterException("变量已存在");
 
         Variable temp = allocator.newVariable(variableName, size);
         if (temp != null) varMap.put(variableName, temp);
