@@ -1,18 +1,31 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
-/**
- * Created by jackq on 7/6/16.
- */
-public class AllocatorSequentialWorstImpl extends AllocatorSequentialFirstImpl implements Allocator {
-    @Override
-    int findNextFreeBlock(int blockSize) {
-        int size = blockSize;
-        int addr = MAGIC_POSITION_NONE;
-        for (int pos = getMemoryFirstFree(); pos != MAGIC_POSITION_NONE; pos = getNextFreeBlock(pos))
-            if (getBlockSize(pos) >= blockSize && getBlockSize(pos) > size) {
-                size = getBlockSize(pos);
-                addr = pos;
+class AllocatorSequentialWorstImpl extends AllocatorSequential {
+
+    public AllocatorSequentialWorstImpl(int size) {
+        super(size);
+    }
+
+    protected int pickFreeBlock(int size) {
+        System.out.println("最差适配");
+
+        if (freelist == null) return -1;  //无空闲块
+        int freeStart = freelist.getPos();
+
+        int worstPos = freeStart;
+        int sizeOfWorstPos = MIN_SHORTINT;
+
+        int curr = freeStart;
+        do {
+            if (memPool[curr + FULL_SIZE] > sizeOfWorstPos) {
+                worstPos = curr;
+                sizeOfWorstPos = memPool[worstPos + FULL_SIZE];
             }
-        return addr;
+            curr = memPool[curr + R_PTR];
+        }
+        while (curr != freeStart);
+
+        if (memPool[worstPos + FULL_SIZE] >= (size + MIN_EXTRA)) return worstPos;
+        else return -1;
     }
 }

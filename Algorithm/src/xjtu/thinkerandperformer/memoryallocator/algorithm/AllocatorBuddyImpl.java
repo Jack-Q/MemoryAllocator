@@ -9,9 +9,14 @@ import java.util.Arrays;
  */
 
 
-public class AllocatorBuddyImpl implements Allocator {
+class AllocatorBuddyImpl implements AllocatorADT {
 
     private int[] memoryPool;
+
+
+    public AllocatorBuddyImpl(int size) {
+        init(size);
+    }
 
     @Override
     public void init(int size) {
@@ -60,13 +65,13 @@ public class AllocatorBuddyImpl implements Allocator {
 
         setFreeList(k, blockNextFree);
         setBlockPrevFree(blockNextFree, MAGIC_POSITION_NONE);
-        return addr == MAGIC_POSITION_NONE ? null : new Variable(variableName, this, addr + BLOCK_CONTENT_OFFSET);
+        return addr == MAGIC_POSITION_NONE ? null : new Variable(new MemHandle(addr + BLOCK_CONTENT_OFFSET));
     }
 
     @Override
     public boolean write(Variable variable, String value) {
 
-        int contentPos = variable.getAddress();
+        int contentPos = variable.getHandle().getPos();
         int startPos = getBlockStartPos(contentPos);
         // Insufficient space
         if (getBlockSize(startPos) - BLOCK_EXTRA_SIZE >= value.length()) {
@@ -83,15 +88,15 @@ public class AllocatorBuddyImpl implements Allocator {
     @Override
     public String read(Variable variable) {
         int len = 0;
-        while (memoryPool[variable.getAddress() + len] != MAGIC_STRING_END
-                && memoryPool[variable.getAddress() + len] != MAGIC_BLOCK_END)
+        while (memoryPool[variable.getHandle().getPos() + len] != MAGIC_STRING_END
+                && memoryPool[variable.getHandle().getPos() + len] != MAGIC_BLOCK_END)
             len++;
-        return new String(memoryPool, variable.getAddress(), len);
+        return new String(memoryPool, variable.getHandle().getPos(), len);
     }
 
     @Override
     public void deleteVariable(Variable variable) {
-        int startPos = getBlockStartPos(variable.getAddress());
+        int startPos = getBlockStartPos(variable.getHandle().getPos());
         int k = getBlockSize(startPos);
 
         // delete

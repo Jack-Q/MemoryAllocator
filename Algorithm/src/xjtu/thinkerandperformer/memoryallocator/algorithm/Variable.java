@@ -1,45 +1,21 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
+class Variable {
 
-class Variable{
-    private final String name;
-    private final Allocator allocator;
-    private int address;
+    private MemHandle handle;
 
-    public Variable(String name, Allocator allocator){
-        this.name = name;
-        this.allocator = allocator;
+    /*构造方法*/
+    public Variable(MemHandle handle) {
+        this.handle = handle;
     }
 
-    public Variable(String name, Allocator allocator, int address){
-        this(name, allocator);
-        setAddress(address);
+    /*获得句柄*/
+    public MemHandle getHandle() {
+        return handle;
     }
 
-    public void setAddress(int address){
-        this.address = address;
+    /*设置句柄*/
+    public void setHandle(MemHandle handleValue) {
+        handle = handleValue;
     }
-
-    public int getAddress(){return this.address;}
-
-    public String getValue(){
-        return allocator.read(this);
-    }
-
-    public boolean setValue(String value){
-        return allocator.write(this, value);
-    }
-
-    public void delete(){
-        allocator.deleteVariable(this);
-    }
-
-
-    @Override
-    public String toString(){
-        return getValue();
-    }
-
-    public String getName(){return this.name;}
-
 }
