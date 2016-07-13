@@ -271,9 +271,10 @@ abstract class AllocatorSequential implements AllocatorADT {
     @Override
     public void show(AllocatorADT allocator, List<String> sortVariableList) {
         Iterator<String> iterator = sortVariableList.iterator();
-        System.out.println("-------------------------------------------------------------------------------");
-        System.out.println("|    block   |  status  |   size   | used size | left pointer | right pointer |");
-        System.out.println("-------------------------------------------------------------------------------");
+
+        System.out.println("-----------------------------------------------------------------------------------------------");
+        System.out.println("|    block   |  status  |   size   | used size | variable name | left pointer | right pointer |");
+        System.out.println("-----------------------------------------------------------------------------------------------");
         for (int i = 0; i < memPool.length; i++) {
             if (memPool[i] == FREE || memPool[i] == RESERVED) {
                 if (memPool[i] == FREE) {
@@ -282,9 +283,10 @@ abstract class AllocatorSequential implements AllocatorADT {
                     System.out.printf("   %s   |", "free");
                     System.out.printf("  %5d   |", memPool[i + FULL_SIZE]);
                     System.out.printf("           |");
+                    System.out.printf("               |");
                     System.out.printf("    %5d     |", memPool[i + L_PTR]);
                     System.out.printf("     %5d     |", memPool[i + R_PTR]);
-                    System.out.println("\n-------------------------------------------------------------------------------");
+                    System.out.println("\n-----------------------------------------------------------------------------------------------");
                     i = endPos;
                 } else {
                     int endPos = i + memPool[i + FULL_SIZE] + RES_END_TAG;
@@ -292,10 +294,10 @@ abstract class AllocatorSequential implements AllocatorADT {
                     System.out.printf(" %s |", "reserved");
                     System.out.printf("  %5d   |", memPool[i + FULL_SIZE]);
                     System.out.printf("  %5d    |", memPool[i + USER_SIZE]);
+                    System.out.printf("     %-5s     |", iterator.next());
                     System.out.printf("              |", memPool[i + L_PTR]);
                     System.out.printf("               |", memPool[i + R_PTR]);
-                    System.out.printf(iterator.next());
-                    System.out.println("\n-------------------------------------------------------------------------------");
+                    System.out.println("\n-----------------------------------------------------------------------------------------------");
                     i = endPos;
                 }
             }

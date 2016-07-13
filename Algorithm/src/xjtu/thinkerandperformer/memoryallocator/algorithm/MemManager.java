@@ -16,8 +16,8 @@ public class MemManager {
     void init(int size) throws NumberOutOfBoundsException {
         if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
 
-        //allocator = new AllocatorSequentialBestImpl(size);
-        allocator = new AllocatorBuddyImpl(size);
+        allocator = new AllocatorSequentialBestImpl(size);
+//        allocator = new AllocatorBuddyImpl(size);
         varMap = new HashMap<String, Variable>();
     }
 
