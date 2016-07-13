@@ -120,7 +120,7 @@ abstract class AllocatorSequential implements AllocatorADT {
     /*删除变量*/
     @Override
     public void deleteVariable(Variable variable) {
-        //定义F块的常用量
+        //定义F块常用量
         int startPos = variable.getHandle().getPos(); //该变量在存储池中的起点位置
         int size = memPool[startPos + FULL_SIZE];
         int endPos = startPos + size + RES_END_TAG;
