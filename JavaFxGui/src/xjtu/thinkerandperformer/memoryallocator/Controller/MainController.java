@@ -5,7 +5,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.RadialGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 /**
@@ -19,12 +24,18 @@ public class MainController {
 
     private static final double outerRadius = 124d;
     private static final double innerRadius = 120d;
-    private static final double scaleRatio = 3.0d;
+    private static final double scaleRatio = 1.0d;
     private static final double averageRadius = (innerRadius + outerRadius) / 2;
 
 
     @FXML
     public Label memoryInfoContainer;
+
+    @FXML
+    public Label scaleMemoryContainer;
+
+    @FXML
+    public Canvas scaleMemoryCanvas;
 
     @FXML
     private Canvas buddyMemoryCanvas;
@@ -70,8 +81,8 @@ public class MainController {
         int width = (int) buddyMemoryCanvas.getWidth();
         int height = (int) buddyMemoryCanvas.getHeight();
         ctx.clearRect(0, 0, width, height);
-        for (int h = padding; h < height - padding - blockWidth; h += blockWidth + blockMargin)
-            for (int w = padding; w < width - padding - blockWidth; w += blockWidth + blockMargin) {
+        for (int h = padding; h < height - padding - blockWidth; h += blockSpace)
+            for (int w = padding; w < width - padding - blockWidth; w += blockSpace) {
                 double opacity = 0.2 + 0.6 * (0.5 * w / width + 0.5 * h / height);
                 ctx.setFill(Color.web("#09c", opacity));
                 ctx.fillRect(w, h, blockWidth, blockWidth);
@@ -105,8 +116,12 @@ public class MainController {
         int blockIndexX = Math.max((int) ((centerX - averageRadius / scaleRatio - padding) / blockSpace), 0);
         int blockIndexY = Math.max((int) ((centerY - averageRadius / scaleRatio - padding) / blockSpace), 0);
         ctx.setFont(new Font(blockWidth * 0.4 * scaleRatio));
-        for (int indexX = blockIndexX; indexX - blockIndexX < averageRadius * 2 / scaleRatio / blockSpace + 1; indexX++)
-            for (int indexY = blockIndexY; indexY - blockIndexY < averageRadius * 2 / scaleRatio / blockSpace + 1; indexY++) {
+        for (int indexX = blockIndexX;
+             indexX - blockIndexX < averageRadius * 2 / scaleRatio / blockSpace + 1 && padding + indexX * blockSpace < width - padding - blockWidth;
+             indexX++)
+            for (int indexY = blockIndexY;
+                 indexY - blockIndexY < averageRadius * 2 / scaleRatio / blockSpace + 1 && padding + indexY * blockSpace < height - padding - blockWidth;
+                 indexY++) {
                 double opacity = 0.2 + 0.6 * (0.5 * (indexX * blockSpace) / width + 0.5 * (indexY * blockSpace) / height);
                 ctx.setFill(Color.web("#09c", opacity));
                 ctx.fillRect(
@@ -123,6 +138,12 @@ public class MainController {
 
         // Remove Clip
         ctx.restore();
+
+
+        // Add translucent effect to magnifier
+        ctx.setFill(new RadialGradient(0, 0, centerX, centerY, averageRadius, false, CycleMethod.NO_CYCLE,
+                new Stop(0.4, Color.web("#fff", 0)),new Stop(0.8, Color.web("#fff", 0.2)),  new Stop(1, Color.web("#fff", 0.8))));
+        ctx.fillOval(centerX - averageRadius, centerY - averageRadius, 2 * averageRadius, 2 * averageRadius);
 
         // Draw outline
         ctx.setStroke(new Color(0.6, 0.4, 0.2, 1));

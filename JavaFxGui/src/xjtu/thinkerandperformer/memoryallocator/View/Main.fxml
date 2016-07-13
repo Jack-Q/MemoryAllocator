@@ -6,13 +6,17 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1" fx:controller="xjtu.thinkerandperformer.memoryallocator.Controller.MainController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+         prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/null"
+         xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="xjtu.thinkerandperformer.memoryallocator.Controller.MainController">
     <tabs>
         <Tab text="Buddy Allocation">
             <content>
                 <AnchorPane prefHeight="200.0" prefWidth="200.0">
                     <children>
-                        <Label fx:id="memoryInfoContainer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label fx:id="memoryInfoContainer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <graphic>
                                 <Canvas fx:id="buddyMemoryCanvas">
                                 </Canvas>
@@ -24,7 +28,18 @@
         </Tab>
         <Tab text="Sequential Allocation">
             <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Label fx:id="scaleMemoryContainer" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <graphic>
+                                <Canvas fx:id="scaleMemoryCanvas">
+                                </Canvas>
+                            </graphic>
+                        </Label>
+                    </children>
+                </AnchorPane>
             </content>
         </Tab>
     </tabs>

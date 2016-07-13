@@ -10,8 +10,8 @@ public class MemManager {
 
     /*初始化存储池*/
     void init(int size) {
-        allocator = new AllocatorSequentialBestImpl(size);
-        varMap = new HashMap<String, Variable>();
+        allocator = new AllocatorBuddyImpl(size);
+        varMap = new HashMap<>();
     }
 
     /*为变量申请空间*/
