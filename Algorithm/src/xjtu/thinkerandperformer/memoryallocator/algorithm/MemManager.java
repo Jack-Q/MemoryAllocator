@@ -16,9 +16,9 @@ public class MemManager {
     void init(int size) throws NumberOutOfBoundsException {
         if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
 
-        allocator = new AllocatorSequentialBestImpl(size);
-//        allocator = new AllocatorBuddyImpl(size);
-        varMap = new HashMap<String, Variable>();
+        //        allocator = new AllocatorSequentialBestImpl(size);
+       allocator = new AllocatorBuddyImpl(size);
+        varMap = new HashMap<>();
     }
 
     /*为变量申请空间*/
@@ -63,7 +63,7 @@ public class MemManager {
     void show() throws MemoryPoolUninitializedException {
         if (allocator == null) throw new MemoryPoolUninitializedException();
 
-        List<String> sortVariableList = varMap.entrySet().stream().sorted((e1, e2) -> e1.getValue().getHandle().getPos() - e2.getValue().getHandle().getPos()).map(e -> e.getKey()).collect(Collectors.toList());
+        List<String> sortVariableList = varMap.entrySet().stream().sorted((e1, e2) -> e1.getValue().getHandle().getPos() - e2.getValue().getHandle().getPos()).map(Map.Entry::getKey).collect(Collectors.toList());
         allocator.show(allocator, sortVariableList);
     }
 }

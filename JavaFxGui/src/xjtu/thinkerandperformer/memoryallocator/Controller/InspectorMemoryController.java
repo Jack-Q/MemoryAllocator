@@ -4,9 +4,6 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
-import javafx.scene.effect.BlendMode;
-import javafx.scene.effect.Effect;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
@@ -14,9 +11,9 @@ import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
 /**
- * Controller for Main.fxml
+ * Controller for InspectorMemoryCanvas.fxml
  */
-public class MainController {
+public class InspectorMemoryController {
     private static final int blockWidth = 28;
     private static final int blockMargin = 2;
     private static final int padding = 5;
@@ -29,16 +26,10 @@ public class MainController {
 
 
     @FXML
-    public Label memoryInfoContainer;
+    public Label label;
 
     @FXML
-    public Label scaleMemoryContainer;
-
-    @FXML
-    public Canvas scaleMemoryCanvas;
-
-    @FXML
-    private Canvas buddyMemoryCanvas;
+    private Canvas canvas;
 
 
     private GraphicsContext ctx;
@@ -56,19 +47,19 @@ public class MainController {
     private void initialize() {
         System.out.println("Init Called");
 
-        ctx = buddyMemoryCanvas.getGraphicsContext2D();
+        ctx = canvas.getGraphicsContext2D();
 
         System.out.println("Setup binding");
-        buddyMemoryCanvas.setHeight(memoryInfoContainer.getHeight());
-        buddyMemoryCanvas.setWidth(memoryInfoContainer.getHeight());
-        buddyMemoryCanvas.widthProperty().addListener(observable -> updateScene());
-        buddyMemoryCanvas.heightProperty().addListener(observable -> updateScene());
-        buddyMemoryCanvas.heightProperty().bind(memoryInfoContainer.heightProperty());
-        buddyMemoryCanvas.widthProperty().bind(memoryInfoContainer.widthProperty());
+        canvas.setHeight(label.getHeight());
+        canvas.setWidth(label.getHeight());
+        canvas.widthProperty().addListener(observable -> updateScene());
+        canvas.heightProperty().addListener(observable -> updateScene());
+        canvas.heightProperty().bind(label.heightProperty());
+        canvas.widthProperty().bind(label.widthProperty());
 
-        buddyMemoryCanvas.setOnMouseEntered(e -> setShowInspector(true, e.getX(), e.getY()));
-        buddyMemoryCanvas.setOnMouseExited(e -> setShowInspector(false, e.getX(), e.getY()));
-        buddyMemoryCanvas.setOnMouseMoved(e -> updateScene(e.getX(), e.getY()));
+        canvas.setOnMouseEntered(e -> setShowInspector(true, e.getX(), e.getY()));
+        canvas.setOnMouseExited(e -> setShowInspector(false, e.getX(), e.getY()));
+        canvas.setOnMouseMoved(e -> updateScene(e.getX(), e.getY()));
 
         updateScene();
     }
@@ -78,8 +69,8 @@ public class MainController {
     }
 
     private void updateScene(double x, double y) {
-        int width = (int) buddyMemoryCanvas.getWidth();
-        int height = (int) buddyMemoryCanvas.getHeight();
+        int width = (int) canvas.getWidth();
+        int height = (int) canvas.getHeight();
         ctx.clearRect(0, 0, width, height);
         for (int h = padding; h < height - padding - blockWidth; h += blockSpace)
             for (int w = padding; w < width - padding - blockWidth; w += blockSpace) {
@@ -94,8 +85,8 @@ public class MainController {
 
     private void drawInspector(double centerX, double centerY) {
 
-        int width = (int) buddyMemoryCanvas.getWidth();
-        int height = (int) buddyMemoryCanvas.getHeight();
+        int width = (int) canvas.getWidth();
+        int height = (int) canvas.getHeight();
 
 
         // Save global context

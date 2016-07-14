@@ -124,7 +124,6 @@ class AllocatorBuddyImpl implements AllocatorADT {
 
         // delete
         initFreeBlock(startPos, k, getFreeList(k));
-        setFreeList(k, startPos);
 
         // merge
         while (k < getMemoryK() && getBlockSize(getBuddyPos(startPos, k)) == k && isFree(getBuddyPos(startPos, k))) {
@@ -132,6 +131,8 @@ class AllocatorBuddyImpl implements AllocatorADT {
             int buddyPrev = getBlockPrevFree(buddy);
             if (buddyPrev != MAGIC_POSITION_NONE)
                 setBlockNextFree(buddyPrev, getBlockNextFree(buddy));
+            else
+                setFreeList(k, MAGIC_POSITION_NONE);
 
             startPos = buddy < startPos ? buddy : startPos;
             k++;
@@ -140,6 +141,7 @@ class AllocatorBuddyImpl implements AllocatorADT {
         }
 
 
+        setFreeList(k, startPos);
     }
 
     @Override
@@ -222,6 +224,7 @@ class AllocatorBuddyImpl implements AllocatorADT {
 
     private void setFreeList(int k, int position) {
         memoryPool[MEMORY_FREELIST_OFFSET + k] = position;
+        setBlockPrevFree(position, MAGIC_POSITION_NONE);
     }
 
     private int getFreeList(int k) {
