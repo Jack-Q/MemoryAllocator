@@ -218,7 +218,7 @@ abstract class AllocatorSequential implements AllocatorADT {
             int sizeOfSuccBlock = memPool[startOfSuccBlock + FULL_SIZE];
             int endOfSuccBlock = startOfSuccBlock + sizeOfSuccBlock + FREE_END_TAG;
 
-            if ((endOfPreBlock == startPos - 1) && (endOfPreBlock == startPos - 1)) {
+            if ((endOfPreBlock == startPos - 1) && (startOfSuccBlock == endPos + 1)) {
                 memPool[endOfPreBlock] = memPool[startPos] = memPool[endPos] = memPool[startOfSuccBlock] = 0;
                 memPool[startOfPreBlock + FULL_SIZE] = memPool[endOfSuccBlock - 1] = (short) (endOfSuccBlock - startOfPreBlock + 1 - FREE_OVERHEAD);
                 memPool[startOfPreBlock + R_PTR] = memPool[startOfSuccBlock + R_PTR];
@@ -229,7 +229,7 @@ abstract class AllocatorSequential implements AllocatorADT {
                 variable.setHandle(null);
                 return;
             }
-            if ((endOfPreBlock == startPos - 1) && (endOfPreBlock != startPos - 1)) {
+            if ((endOfPreBlock == startPos - 1) && (startOfSuccBlock != endPos + 1)) {
                 memPool[startOfPreBlock + FULL_SIZE] += size + RES_OVERHEAD;
                 memPool[endOfPreBlock] = memPool[startPos] = 0;//必须消除不再作为标记位的TAG
                 memPool[endPos] = FREE;
@@ -239,7 +239,7 @@ abstract class AllocatorSequential implements AllocatorADT {
                 variable.setHandle(null);
                 return;
             }
-            if ((endOfPreBlock != startPos - 1) && (endOfPreBlock == startPos - 1)) {
+            if ((endOfPreBlock != startPos - 1) && (startOfSuccBlock == endPos + 1)) {
                 memPool[memPool[startOfSuccBlock + R_PTR] + L_PTR] = memPool[memPool[startOfSuccBlock + L_PTR] + R_PTR] = (short) startPos;
                 memPool[startPos] = FREE;
                 memPool[startPos + FULL_SIZE] += sizeOfSuccBlock + RES_OVERHEAD;
@@ -254,7 +254,7 @@ abstract class AllocatorSequential implements AllocatorADT {
                 variable.setHandle(null);
                 return;
             }
-            if ((endOfPreBlock != startPos - 1) && (endOfPreBlock != startPos - 1)) {
+            if ((endOfPreBlock != startPos - 1) && (startOfSuccBlock != endPos + 1)) {
                 memPool[startPos] = memPool[endPos] = FREE;
                 memPool[startPos + FULL_SIZE] = memPool[endPos - 1] = (short) (size + RES_OVERHEAD - FREE_OVERHEAD);
                 memPool[L_PTR] = (short) startOfPreBlock;
