@@ -1,6 +1,7 @@
-package xjtu.thinkerandperformer.memoryallocator.Controller;
+package xjtu.thinkerandperformer.memoryallocator.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -10,10 +11,13 @@ import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 /**
- * Controller for InspectorMemoryCanvas.fxml
+ * controller for InspectorMemoryCanvas.fxml
  */
-public class InspectorMemoryController {
+public class InspectorMemoryController implements Initializable {
     private static final int blockWidth = 28;
     private static final int blockMargin = 2;
     private static final int padding = 5;
@@ -43,8 +47,8 @@ public class InspectorMemoryController {
     }
 
 
-    @FXML
-    private void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Init Called");
 
         ctx = canvas.getGraphicsContext2D();
@@ -92,7 +96,7 @@ public class InspectorMemoryController {
         // Save global context
         ctx.save();
 
-        // View area of magnifier
+        // view area of magnifier
         ctx.setFill(new Color(1, 1, 1, 1));
         ctx.fillOval(centerX - averageRadius, centerY - averageRadius, 2 * averageRadius, 2 * averageRadius);
 
@@ -144,4 +148,5 @@ public class InspectorMemoryController {
         // Restore global context
         ctx.restore();
     }
+
 }

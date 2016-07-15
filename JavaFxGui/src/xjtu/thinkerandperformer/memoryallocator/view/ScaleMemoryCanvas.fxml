@@ -6,7 +6,7 @@
 <?import javafx.scene.control.Label?>
 <Label xmlns="http://javafx.com/javafx/null" xmlns:fx="http://javafx.com/fxml/1"
        prefWidth="800" prefHeight="600"
-       fx:controller="xjtu.thinkerandperformer.memoryallocator.Controller.ScaleMemoryCanvasController"
+       fx:controller="xjtu.thinkerandperformer.memoryallocator.controller.ScaleMemoryCanvasController"
        fx:id="container">
     <graphic>
         <Canvas fx:id="canvas" width="20" height="20"/>

@@ -1,8 +1,9 @@
-package xjtu.thinkerandperformer.memoryallocator.Controller;
+package xjtu.thinkerandperformer.memoryallocator.controller;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -10,10 +11,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 
-public class ScaleMemoryCanvasController {
+public class ScaleMemoryCanvasController implements Initializable {
     private static final double margin = 10;
 
     private static final double blockWidth = 28;
@@ -46,7 +49,8 @@ public class ScaleMemoryCanvasController {
 
 
     @FXML
-    public void initialize() {
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
 
         // Set graphic context
         ctx = canvas.getGraphicsContext2D();
