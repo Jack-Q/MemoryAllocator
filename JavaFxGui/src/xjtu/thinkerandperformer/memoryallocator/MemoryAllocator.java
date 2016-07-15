@@ -18,6 +18,7 @@ public class MemoryAllocator extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("View/Frame.fxml"));
+        primaryStage.setTitle("Memory Allocation Visualization");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

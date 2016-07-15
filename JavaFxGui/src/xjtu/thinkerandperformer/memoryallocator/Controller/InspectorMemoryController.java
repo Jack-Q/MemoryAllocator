@@ -21,7 +21,7 @@ public class InspectorMemoryController {
 
     private static final double outerRadius = 124d;
     private static final double innerRadius = 120d;
-    private static final double scaleRatio = 1.0d;
+    private static final double scaleRatio = 2.0d;
     private static final double averageRadius = (innerRadius + outerRadius) / 2;
 
 
