@@ -10,8 +10,10 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.RadialGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -45,6 +47,7 @@ public class InspectorMemoryCanvasController implements Initializable {
     private int blockColumnCount;
     private int blockRowCount;
     private double originalZoomFactor;
+    private List<BitBlockInfo> blockInformationList;
 
     private void setShowInspector(boolean isShowInspector, double x, double y) {
         if (this.isShowInspector == isShowInspector) return;
@@ -256,4 +259,7 @@ public class InspectorMemoryCanvasController implements Initializable {
         updateScene();
     }
 
+    public void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
+        this.blockInformationList = blockInformationList;
+    }
 }

@@ -1,5 +1,6 @@
 package xjtu.thinkerandperformer.memoryallocator.component;
 
+import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.MemManager;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
 public abstract class VisualMemManager extends MemManager {
 
     private Consumer<String> readValueListener = null;
-    private Object blockInfoList;
+
 
     public void setReadValueListener(Consumer<String> readValueListener) {
         this.readValueListener = readValueListener;
@@ -47,4 +48,6 @@ public abstract class VisualMemManager extends MemManager {
     public abstract List<BlockInfo> getBlockInfoList();
 
     public abstract int getBlockCount();
+
+    public abstract List<BitBlockInfo> getBitBlockInformationList();
 }

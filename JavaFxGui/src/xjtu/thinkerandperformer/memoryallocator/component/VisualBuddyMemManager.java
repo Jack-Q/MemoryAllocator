@@ -1,6 +1,7 @@
 package xjtu.thinkerandperformer.memoryallocator.component;
 
 import xjtu.thinkerandperformer.memoryallocator.algorithm.AllocatorBuddyImpl;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.MemManager;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
@@ -30,5 +31,10 @@ public class VisualBuddyMemManager extends VisualMemManager {
     @Override
     public int getBlockCount() {
         return allocatorBuddy.getBlockCount();
+    }
+
+    @Override
+    public List<BitBlockInfo> getBitBlockInformationList() {
+        return allocatorBuddy.getBitBlockInformationList();
     }
 }

@@ -342,4 +342,59 @@ public abstract class AllocatorSequential implements AllocatorADT {
         }
         return blockInfoList;
     }
+
+    public List<BitBlockInfo> getBitBlockInformationList() {
+        List<BitBlockInfo> bitBlockInfoList = new ArrayList<>(memPool.length); // use explicit capacity for performance
+        for (int i = 0; i < memPool.length; i++) {
+            // Process an allocation block
+            boolean isFree = memPool[i] == FREE;
+            int blockSize = memPool[i + FULL_SIZE];
+            int dataBlock = isFree ? 0 : i + memPool[i + 2] + 3;
+            int endPos = i + blockSize + (isFree ? FREE_END_TAG : RES_END_TAG);
+            // write data
+
+            // offset + 0
+            bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.StartTagBlock, memPool[i]));
+            i++;
+
+            // offset + 1
+            bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.FullSizeBlock, memPool[i]));
+            i++;
+
+            // offset + 2
+            bitBlockInfoList.set(i, new BitBlockInfo(isFree ? MemoryBlockType.PointerBlock : MemoryBlockType.UsedSizeBlock, memPool[i]));
+            i++;
+
+            if (isFree) {
+                // for free block only
+                // offset + 3
+                bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.PointerBlock, memPool[i]));
+                i++;
+
+                for (; i < endPos - 2; i++)
+                    bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.FreeBlock, memPool[i]));
+
+                // last pos - 1
+                bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.FullSizeBlock, memPool[i]));
+                i++;
+
+                // last pos - 0
+                bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memPool[i]));
+                i++;
+            } else {
+                // for reserved block only
+                for (; i < endPos - 1; i++)
+                    if (i < dataBlock)
+                        bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.DataBlock, memPool[i]));
+                    else
+                        bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.UnusedDataBlock, memPool[i]));
+
+                // last pos
+                bitBlockInfoList.set(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memPool[i]));
+                i++;
+            }
+        }
+
+        return bitBlockInfoList;
+    }
 }

@@ -295,6 +295,10 @@ public class AllocatorBuddyImpl implements AllocatorADT {
         return this.memoryPool.length;
     }
 
+    public List<BitBlockInfo> getBitBlockInformationList() {
+        return null;
+    }
+
 
     //endregion
 

@@ -11,8 +11,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
@@ -49,6 +51,7 @@ public class ScaleMemoryCanvasController implements Initializable {
     private boolean isDrag = false;
     private double mousePositionX = 0.0d;
     private double mousePositionY = 0.0d;
+    private List<BitBlockInfo> blockInformationList;
 
 
     @FXML
@@ -253,6 +256,10 @@ public class ScaleMemoryCanvasController implements Initializable {
     public void setBlockCount(int blockCount){
         this.blockCount = blockCount;
         repaint();
+    }
+
+    public void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
+        this.blockInformationList = blockInformationList;
     }
     // endregion
 }

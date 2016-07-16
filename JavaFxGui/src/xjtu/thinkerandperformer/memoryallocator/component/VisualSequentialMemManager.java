@@ -1,6 +1,7 @@
 package xjtu.thinkerandperformer.memoryallocator.component;
 
 import xjtu.thinkerandperformer.memoryallocator.algorithm.AllocatorSequentialBestImpl;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
 
@@ -29,6 +30,11 @@ public class VisualSequentialMemManager extends VisualMemManager {
     @Override
     public int getBlockCount() {
         return this.sequentialBest.getBlockCount();
+    }
+
+    @Override
+    public List<BitBlockInfo> getBitBlockInformationList() {
+        return this.sequentialBest.getBitBlockInformationList();
     }
 }
 
