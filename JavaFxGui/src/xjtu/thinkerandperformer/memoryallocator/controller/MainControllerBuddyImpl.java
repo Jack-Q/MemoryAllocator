@@ -1,8 +1,7 @@
 package xjtu.thinkerandperformer.memoryallocator.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ToggleButton;
+import xjtu.thinkerandperformer.memoryallocator.component.VisualBuddyMemManager;
+import xjtu.thinkerandperformer.memoryallocator.component.VisualMemManager;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -10,16 +9,22 @@ import java.util.ResourceBundle;
 
 public class MainControllerBuddyImpl extends MainController {
 
+    private VisualBuddyMemManager visualBuddyMemManager = new VisualBuddyMemManager();
+
     @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        super.initialize(location, resources);
+    VisualMemManager getMemoryManager() {
+        return visualBuddyMemManager;
     }
 
     @Override
-    void handleCommand(String command) {
-        System.out.println("Buddy Impl: " + command);
-        addConsoleItem(command, ConsoleCellType.Input);
-        addConsoleItem("Executed command: " + command, ConsoleCellType.MessageOutput);
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
+
+        // Connect UI to visual memory manager
+        visualBuddyMemManager.setReadValueListener(s -> addConsoleItem(s, ConsoleCellType.DataOutput));
+
+
     }
+
 
 }

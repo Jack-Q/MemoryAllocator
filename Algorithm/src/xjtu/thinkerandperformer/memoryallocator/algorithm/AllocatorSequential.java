@@ -295,13 +295,17 @@ public abstract class AllocatorSequential implements AllocatorADT {
                     System.out.printf("  %5d   |", memPool[i + FULL_SIZE]);
                     System.out.printf("  %5d    |", memPool[i + USER_SIZE]);
                     System.out.printf("    %-7s    |", iterator.next());
-                    System.out.printf("              |", memPool[i + L_PTR]);
-                    System.out.printf("               |", memPool[i + R_PTR]);
+                    System.out.printf("              |" /*, memPool[i + L_PTR]*/);
+                    System.out.printf("               |"/*, memPool[i + R_PTR]*/);
                     System.out.println("\n-----------------------------------------------------------------------------------------------");
                     i = endPos;
                 }
             }
         }
         System.out.println();
+    }
+
+    public int getBlockSize(int pos) {
+        return memPool[pos + FULL_SIZE];
     }
 }

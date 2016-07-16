@@ -35,6 +35,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
     private static final int MAGIC_STRING_END = -1;
     private int[] memoryPool;
 
+    //endregion
     public AllocatorBuddyImpl(int size) {
         init(size);
     }
@@ -54,9 +55,6 @@ public class AllocatorBuddyImpl implements AllocatorADT {
         Arrays.fill(memoryPool, MEMORY_FREELIST_OFFSET, MEMORY_FREELIST_SIZE, MAGIC_POSITION_NONE);
         setFreeList(k, MEMORY_START_OFFSET);
     }
-    //endregion
-
-    //region constants
 
     @Override
     public Variable newVariable(String variableName, int size) {
@@ -97,7 +95,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
         int contentPos = variable.getHandle().getPos();
         int startPos = getBlockStartPos(contentPos);
         // Insufficient space
-        if (getBlockSize(startPos) - BLOCK_EXTRA_SIZE >= value.length()) {
+        if (pow2(getBlockSize(startPos)) - BLOCK_EXTRA_SIZE >= value.length()) {
 
             for (int i = 0; i < value.length(); i++)
                 memoryPool[contentPos + i] = value.charAt(i);
@@ -173,8 +171,12 @@ public class AllocatorBuddyImpl implements AllocatorADT {
 
     }
 
-    //endregion
+    // region Visualizer Helper
+    public int getBLockSize(int contentPosition) {
+        return getBlockSize(getBlockStartPos(contentPosition));
+    }
 
+    // endregion
     //region private helper methods
 
     private int leastPowerOf2(int num) {

@@ -137,7 +137,11 @@ public class FrameController implements Initializable {
             e.consume();
             showPopup();
         });
-        executeButton.setOnAction(e -> currentController().handleCommand(commandLine.getValue() == null ? commandLine.getEditor().getText() : commandLine.getValue().getValue()));
+        executeButton.setOnAction(e -> {
+            currentController().handleCommand(commandLine.getValue() == null ? commandLine.getEditor().getText() : commandLine.getValue().getValue());
+            commandLine.setValue(new SuggestionCellModel(""));
+
+        });
 
     }
 

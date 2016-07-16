@@ -9,8 +9,10 @@ import java.util.stream.Collectors;
 
 public class MemManager {
 
-    private AllocatorADT allocator;
-    private Map<String, Variable> varMap;
+    protected AllocatorADT allocator;
+    protected Map<String, Variable> varMap;
+
+
 
     /*初始化存储池*/
     public void init(int size) throws NumberOutOfBoundsException {
