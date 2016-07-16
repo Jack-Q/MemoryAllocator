@@ -1,5 +1,6 @@
 package xjtu.thinkerandperformer.memoryallocator.component;
 
+import xjtu.thinkerandperformer.memoryallocator.algorithm.BlockInfo;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.MemManager;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.MemoryPoolUninitializedException;
@@ -8,12 +9,14 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotA
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotFoundException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class VisualMemManager extends MemManager {
 
     private Consumer<String> readValueListener = null;
+    private Object blockInfoList;
 
     public void setReadValueListener(Consumer<String> readValueListener) {
         this.readValueListener = readValueListener;
@@ -39,4 +42,7 @@ public abstract class VisualMemManager extends MemManager {
     }
 
     public abstract int getBlockSize(int pos);
+
+
+    public abstract List<BlockInfo> getBlockInfoList();
 }

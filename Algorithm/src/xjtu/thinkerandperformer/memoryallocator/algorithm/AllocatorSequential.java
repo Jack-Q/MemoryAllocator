@@ -5,6 +5,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.Insufficient
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotAssignedException;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -307,5 +308,38 @@ public abstract class AllocatorSequential implements AllocatorADT {
 
     public int getBlockSize(int pos) {
         return memPool[pos + FULL_SIZE];
+    }
+
+    public List<BlockInfo> getBlockInfoList(List<String> sortVariableList) {
+        List<BlockInfo> blockInfoList = new ArrayList<>();
+        Iterator<String> iterator = sortVariableList.iterator();
+        for (int i = 0; i < memPool.length; i++) {
+            if (memPool[i] == FREE || memPool[i] == RESERVED) {
+                if (memPool[i] == FREE) {
+                    int endPos = i + memPool[i + FULL_SIZE] + FREE_END_TAG;
+                    blockInfoList.add(new BlockInfo(
+                            i,
+                            memPool[i + FULL_SIZE],
+                            memPool[i + L_PTR],
+                            memPool[i + R_PTR],
+                            true,
+                            ""
+                    ));
+                    i = endPos;
+                } else {
+                    int endPos = i + memPool[i + FULL_SIZE] + RES_END_TAG;
+                    blockInfoList.add(new BlockInfo(
+                            i,
+                            memPool[i + FULL_SIZE],
+                            memPool[i + L_PTR],
+                            memPool[i + R_PTR],
+                            false,
+                            iterator.next()
+                    ));
+                    i = endPos;
+                }
+            }
+        }
+        return blockInfoList;
     }
 }

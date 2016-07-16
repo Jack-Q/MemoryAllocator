@@ -1,5 +1,6 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -168,7 +169,6 @@ public class AllocatorBuddyImpl implements AllocatorADT {
             show(blockPosition, k - 1, iterator);
             show(blockPosition + pow2(k - 1), k - 1, iterator);
         }
-
     }
 
     // region Visualizer Helper
@@ -176,7 +176,36 @@ public class AllocatorBuddyImpl implements AllocatorADT {
         return getBlockSize(getBlockStartPos(contentPosition));
     }
 
+    /**
+     * List all block and its information for presentation, this can be implemented just like the show method
+     *
+     * @return the list
+     */
+    public List<BlockInfo> getBlockInfoList(List<String> sortVariableList) {
+        Iterator<String> iterator = sortVariableList.iterator();
+        ArrayList<BlockInfo> blockInfoList = new ArrayList<>();
+        populateBlockInfoList(MEMORY_START_OFFSET, getMemoryK(), iterator, blockInfoList);
+        return blockInfoList;
+    }
+
+    private void populateBlockInfoList(int blockPosition, int k, Iterator<String> iterator, List<BlockInfo> blockInfoList) {
+        if (getBlockSize(blockPosition) == k)
+            blockInfoList.add(new BlockInfo(
+                    blockPosition,
+                    pow2(getBlockSize(blockPosition)),
+                    getBlockPrevFree(blockPosition),
+                    getBlockNextFree(blockPosition),
+                    isFree(blockPosition),
+                    isFree(blockPosition) ? "" : iterator.next())
+            );
+        else {
+            populateBlockInfoList(blockPosition, k - 1, iterator, blockInfoList);
+            populateBlockInfoList(blockPosition + pow2(k - 1), k - 1, iterator, blockInfoList);
+        }
+    }
+
     // endregion
+
     //region private helper methods
 
     private int leastPowerOf2(int num) {

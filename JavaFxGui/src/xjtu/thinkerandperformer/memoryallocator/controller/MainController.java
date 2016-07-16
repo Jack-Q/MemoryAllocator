@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public abstract class MainController implements Initializable {
+abstract class MainController implements Initializable {
     @FXML
     public Slider scaleFactorView;
     @FXML
@@ -68,7 +68,7 @@ public abstract class MainController implements Initializable {
         private final String actionName;
         private final String actionArgs;
 
-        public ActionHistoryCell(String actionName, String actionArgs) {
+        ActionHistoryCell(String actionName, String actionArgs) {
             this.actionName = actionName;
             this.actionArgs = actionArgs;
         }
@@ -173,7 +173,7 @@ public abstract class MainController implements Initializable {
 
     }
 
-    public void addConsoleItem(String message, ConsoleCellType type) {
+    void addConsoleItem(String message, ConsoleCellType type) {
         if (type == null) type = ConsoleCellType.MessageOutput;
         commandConsoleView.getItems().add(new CommandConsoleCell(message, type));
     }
@@ -210,9 +210,24 @@ public abstract class MainController implements Initializable {
 
         // Update the variable list
         updateVariableList();
+        updateBlockList();
     }
 
-    void updateVariableList() {
+    private void updateBlockList() {
+        allocationBlockView.getItems().clear();
+        allocationBlockView.getItems().setAll(getMemoryManager().getBlockInfoList().stream().map(i ->
+                new AllocationBlockListCell(
+                        i.getStartPos(), i
+                        .getSize(),
+                        i.getPrevPosition(),
+                        i.getNextPosition(),
+                        i.isFree() ? BlockStatus.Free : BlockStatus.Busy,
+                        i.getVariableName()
+                )
+        ).collect(Collectors.toList()));
+    }
+
+    private void updateVariableList() {
         Map<String, Variable> variableMap = getMemoryManager().getVariableMap();
         List<VariableListCell> variableListCells = variableMap.entrySet().stream()
                 .map(e -> new VariableListCell(
@@ -224,7 +239,7 @@ public abstract class MainController implements Initializable {
         variableListView.getItems().addAll(variableListCells);
     }
 
-    static void showMessageBox(String message, String description, Alert.AlertType alertType) {
+    private static void showMessageBox(String message, String description, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
         alert.setTitle(message);
         alert.setContentText(description);
