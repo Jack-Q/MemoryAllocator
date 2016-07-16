@@ -6,7 +6,7 @@
 
 <Label xmlns="http://javafx.com/javafx/null"
        xmlns:fx="http://javafx.com/fxml/1" fx:id="label"
-       fx:controller="xjtu.thinkerandperformer.memoryallocator.controller.InspectorMemoryController">
+       fx:controller="xjtu.thinkerandperformer.memoryallocator.controller.InspectorMemoryCanvasController">
     <graphic>
         <Canvas fx:id="canvas">
         </Canvas>

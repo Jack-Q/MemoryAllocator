@@ -2,41 +2,19 @@
 
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.ContextMenu?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Text?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
       prefWidth="1200.0" stylesheets="@../style/Frame.css" xmlns="http://javafx.com/javafx/8.0.102-ea"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="xjtu.thinkerandperformer.memoryallocator.controller.FrameController">
     <!-- Content Page -->
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-        <Tab text="Sequential Method">
-            <AnchorPane>
-
-                <fx:include source="Main.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
-            </AnchorPane>
+    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" fx:id="methodTabs">
+        <Tab text="Sequential Method" userData="sequential">
+            <AnchorPane userData="sequential" fx:id="sequentialMethodPanel"/>
         </Tab>
-        <Tab text="Buddy Method">
-            <AnchorPane>
-                <fx:include source="Main.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
-            </AnchorPane>
+        <Tab text="Buddy Method" userData="buddy">
+            <AnchorPane userData="buddy" fx:id="buddyMethodPanel"/>
         </Tab>
     </TabPane>
     <!-- Bottom item presentation -->
@@ -95,7 +73,7 @@
                     </opaqueInsets>
                 </ComboBox>
             </AnchorPane>
-            <Button text="Execute" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS"/>
+            <Button text="Execute" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS" fx:id="executeButton" defaultButton="true" />
         </HBox>
     </AnchorPane>
 </VBox>

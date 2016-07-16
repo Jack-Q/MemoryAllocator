@@ -2,20 +2,44 @@ package xjtu.thinkerandperformer.memoryallocator.controller;
 
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+import javafx.util.StringConverter;
+import sun.applet.Main;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class FrameController implements Initializable {
+    public AnchorPane sequentialMethodPanel;
+    public AnchorPane buddyMethodPanel;
+    public Button executeButton;
+    public TabPane methodTabs;
+    private MainController sequentialMethodPanelController;
+    private MainController buddyMethodPanelController;
+
+    private MainController currentController() {
+
+        Tab tab = methodTabs.getTabs().stream().filter(Tab::isSelected).findFirst().orElse(null);
+        switch (tab.getUserData().toString()) {
+            case "sequential":
+                return sequentialMethodPanelController;
+
+            case "buddy":
+                return buddyMethodPanelController;
+
+        }
+        return sequentialMethodPanelController;
+    }
+
+
     static class SuggestionCellModel {
         private final String value;
         private final String explanation;
@@ -50,6 +74,16 @@ public class FrameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        FXMLLoader mainFxmlLoader;
+        try {
+            mainFxmlLoader = new FXMLLoader(this.getClass().getResource("../view/Main.fxml"));
+            mainFxmlLoader.setController(sequentialMethodPanelController = new MainControllerSequentialImpl());
+            sequentialMethodPanel.getChildren().add(mainFxmlLoader.load());
+            mainFxmlLoader = new FXMLLoader(this.getClass().getResource("../view/Main.fxml"));
+            mainFxmlLoader.setController(buddyMethodPanelController = new MainControllerBuddyImpl());
+            buddyMethodPanel.getChildren().add(mainFxmlLoader.load());
+        } catch (Exception ignore) {
+        }
         commandLine.setCellFactory(m -> new ListCell<SuggestionCellModel>() {
             private final TextFlow textFlow;
             private final Text value;
@@ -82,6 +116,17 @@ public class FrameController implements Initializable {
 
             }
         });
+        commandLine.setConverter(new StringConverter<SuggestionCellModel>() {
+            @Override
+            public String toString(SuggestionCellModel object) {
+                return object == null ? "" : object.getValue();
+            }
+
+            @Override
+            public SuggestionCellModel fromString(String string) {
+                return new SuggestionCellModel(string);
+            }
+        });
         commandLine.focusedProperty().addListener((f, o, n) -> {
             if (n) {
                 showPopup();
@@ -92,6 +137,8 @@ public class FrameController implements Initializable {
             e.consume();
             showPopup();
         });
+        executeButton.setOnAction(e -> currentController().handleCommand(commandLine.getValue() == null ? commandLine.getEditor().getText() : commandLine.getValue().getValue()));
+
     }
 
     private void showPopup() {

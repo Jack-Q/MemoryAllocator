@@ -14,9 +14,13 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 
 public class ScaleMemoryCanvasController implements Initializable {
+    private Consumer<Double> scaleChangeListener = null;
+
     private static final double margin = 10;
 
     private static final double blockWidth = 28;
@@ -132,6 +136,7 @@ public class ScaleMemoryCanvasController implements Initializable {
                     centerX = ensureCenterX(zoomCenterX - (zoomCenterX - centerX) / zoomFactor, zoomFactor);
                     centerY = ensureCenterY(zoomCenterY - (zoomCenterY - centerY) / zoomFactor, zoomFactor);
                     repaint();
+                    notifyStateChange();
                 });
             }
 
@@ -145,6 +150,11 @@ public class ScaleMemoryCanvasController implements Initializable {
             }
         };
         transition.play();
+    }
+
+    private void notifyStateChange() {
+        if (scaleChangeListener != null)
+            scaleChangeListener.accept((this.zoomFactor - minZoomFactor) / (maxZoomFactor - minZoomFactor));
     }
 
     private void repaint() {
@@ -216,4 +226,19 @@ public class ScaleMemoryCanvasController implements Initializable {
     private double ensureCenterY(double centerY, double zoomFactor) {
         return Math.min(Math.max(centerY, canvas.getHeight() / 2 / zoomFactor), canvas.getHeight() - canvas.getHeight() / 2 / zoomFactor);
     }
+
+    /**
+     * @param percent must be a double number between 0 and 1
+     */
+    public void setScaleFactor(double percent) {
+        percent = Math.min(percent, 1.0d);
+        percent = Math.max(percent, 0.0d);
+        this.zoomFactor = minZoomFactor + (maxZoomFactor - minZoomFactor) * percent;
+        repaint();
+    }
+
+    public void setScaleChangeListener(Consumer<Double> c) {
+        this.scaleChangeListener = c;
+    }
+
 }

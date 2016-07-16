@@ -17,15 +17,17 @@ import java.util.ResourceBundle;
 /**
  * controller for InspectorMemoryCanvas.fxml
  */
-public class InspectorMemoryController implements Initializable {
+public class InspectorMemoryCanvasController implements Initializable {
     private static final int blockWidth = 28;
     private static final int blockMargin = 2;
     private static final int padding = 5;
     private static final int blockSpace = blockWidth + blockMargin;
 
-    private static final double outerRadius = 124d;
-    private static final double innerRadius = 120d;
-    private static final double scaleRatio = 2.0d;
+    private static final double outerRadius = 164d;
+    private static final double innerRadius = 160d;
+    private static final double maxScaleRatio = 10.0d;
+    private static final double minScaleRatio = 1.0d;
+    private double scaleRatio = 1.0d;
     private static final double averageRadius = (innerRadius + outerRadius) / 2;
 
 
@@ -45,7 +47,6 @@ public class InspectorMemoryController implements Initializable {
         this.isShowInspector = isShowInspector;
         updateScene(x, y);
     }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -149,4 +150,13 @@ public class InspectorMemoryController implements Initializable {
         ctx.restore();
     }
 
+
+    /**
+     * @param percent must be a double number between 0 and 1
+     */
+    public void setScaleFactor(double percent) {
+        percent = Math.min(percent, 1.0d);
+        percent = Math.max(percent, 0.0d);
+        scaleRatio = minScaleRatio + (maxScaleRatio - minScaleRatio) * percent;
+    }
 }
