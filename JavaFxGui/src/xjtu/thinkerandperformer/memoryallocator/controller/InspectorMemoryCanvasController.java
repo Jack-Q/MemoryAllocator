@@ -2,7 +2,6 @@ package xjtu.thinkerandperformer.memoryallocator.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -21,7 +20,7 @@ import java.util.ResourceBundle;
 public class InspectorMemoryCanvasController implements Initializable {
     private static final int blockWidth = 28;
     private static final int blockMargin = 2;
-    private static final int padding = 5;
+    private static final int margin = 5;
     private static final int blockSpace = blockWidth + blockMargin;
 
     private static final double outerRadius = 164d;
@@ -43,6 +42,9 @@ public class InspectorMemoryCanvasController implements Initializable {
     private GraphicsContext ctx;
 
     private boolean isShowInspector = false;
+    private int blockColumnCount;
+    private int blockRowCount;
+    private double originalZoomFactor;
 
     private void setShowInspector(boolean isShowInspector, double x, double y) {
         if (this.isShowInspector == isShowInspector) return;
@@ -84,15 +86,20 @@ public class InspectorMemoryCanvasController implements Initializable {
             Utility.showCenterMessage("No Memory Pool Initialized", width, height, ctx);
             return;
         }
-
+        updateBlockCount();
 
         ctx.clearRect(0, 0, width, height);
-        for (int h = padding; h < height - padding - blockWidth; h += blockSpace)
-            for (int w = padding; w < width - padding - blockWidth; w += blockSpace) {
-                double opacity = 0.2 + 0.6 * (0.5 * w / width + 0.5 * h / height);
-                ctx.setFill(Color.web("#09c", opacity));
-                ctx.fillRect(w, h, blockWidth, blockWidth);
-            }
+
+        for (int i = 0; i < blockRowCount; i++)
+            for (int j = 0; j < blockColumnCount; j++)
+                if (i * blockColumnCount + j < blockCount) {
+                    double h = margin + i * blockSpace * originalZoomFactor;
+                    double w = margin + j * blockSpace * originalZoomFactor;
+                    double opacity = 0.2 + 0.6 * (0.5 * w / width + 0.5 * h / height);
+                    ctx.setFill(Color.web("#09c", opacity));
+                    ctx.fillRect(w, h, blockWidth * originalZoomFactor, blockWidth * originalZoomFactor);
+                }
+
 
         if (isShowInspector && x >= 0 && y >= 0)
             drawInspector(x, y);
@@ -111,6 +118,21 @@ public class InspectorMemoryCanvasController implements Initializable {
         ctx.setFill(new Color(1, 1, 1, 1));
         ctx.fillOval(centerX - averageRadius, centerY - averageRadius, 2 * averageRadius, 2 * averageRadius);
 
+        // Fill content
+        int blockIndexX = Math.max((int) ((centerX - averageRadius / scaleRatio - margin) / blockSpace / originalZoomFactor), 0);
+        int blockIndexY = Math.max((int) ((centerY - averageRadius / scaleRatio - margin) / blockSpace / originalZoomFactor), 0);
+
+        ctx.setFont(new Font(blockWidth * 0.4 * scaleRatio * originalZoomFactor));
+        double maxIndexX = Math.min(blockIndexX + averageRadius * 2 / scaleRatio / blockSpace / originalZoomFactor + 1, blockColumnCount);
+        double mavIndexY = Math.min(blockIndexY + averageRadius * 2 / scaleRatio / blockSpace / originalZoomFactor + 1, blockColumnCount);
+
+        //
+        // Implementation Note:
+        // Canvas clip is a  extremely expensive action with involves in calculating/detecting each pixels draw by
+        // sub-sequential actions whether is in the inner region of a path clip. In this signifier implementation,
+        // the delay is significant when the number of memory blocks large enough.
+        //
+
         // Setup Clip
         ctx.save();
         ctx.beginPath();
@@ -118,32 +140,75 @@ public class InspectorMemoryCanvasController implements Initializable {
         ctx.closePath();
         ctx.clip();
 
-        // Fill content
-        int blockIndexX = Math.max((int) ((centerX - averageRadius / scaleRatio - padding) / blockSpace), 0);
-        int blockIndexY = Math.max((int) ((centerY - averageRadius / scaleRatio - padding) / blockSpace), 0);
-        ctx.setFont(new Font(blockWidth * 0.4 * scaleRatio));
-        for (int indexX = blockIndexX;
-             indexX - blockIndexX < averageRadius * 2 / scaleRatio / blockSpace + 1 && padding + indexX * blockSpace < width - padding - blockWidth;
-             indexX++)
-            for (int indexY = blockIndexY;
-                 indexY - blockIndexY < averageRadius * 2 / scaleRatio / blockSpace + 1 && padding + indexY * blockSpace < height - padding - blockWidth;
-                 indexY++) {
-                double opacity = 0.2 + 0.6 * (0.5 * (indexX * blockSpace) / width + 0.5 * (indexY * blockSpace) / height);
+        // Current policy is only draw the blocks on the boundary with the clip
+        for (int indexX = blockIndexX; indexX < maxIndexX; indexX++) {
+            for (int indexY = blockIndexY; indexY < mavIndexY; indexY++) {
+                if (indexX + indexY * blockColumnCount >= blockCount) continue;
+                double x = centerX - scaleRatio * (centerX - indexX * blockSpace * originalZoomFactor - margin);
+                double y = centerY - scaleRatio * (centerY - indexY * blockSpace * originalZoomFactor - margin);
+
+                // drop redundant dawn by detecting whether the block is off-site of the region
+                if (Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                        + Math.pow(centerY - y - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                        > Math.pow(averageRadius + blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2))
+                    continue;
+
+                // let the inside block to be rendered later
+                if(Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                        + Math.pow(centerY - y - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                        < Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2))
+                    continue;
+
+                double opacity = 0.2 + 0.6 * (0.5 * (indexX * blockSpace * originalZoomFactor) / width + 0.5 * (indexY * blockSpace * originalZoomFactor) / height);
                 ctx.setFill(Color.web("#09c", opacity));
                 ctx.fillRect(
-                        centerX - scaleRatio * (centerX - indexX * blockSpace - padding),
-                        centerY - scaleRatio * (centerY - indexY * blockSpace - padding),
-                        blockWidth * scaleRatio, blockWidth * scaleRatio);
+                        x,
+                        y,
+                        blockWidth * scaleRatio * originalZoomFactor, blockWidth * scaleRatio * originalZoomFactor);
                 ctx.setFill(Color.web("#555", 0.8));
+
+                String id = Integer.toString(indexX + indexY * blockColumnCount);
                 ctx.fillText(
-                        String.format("%2d", indexX + indexY * width / blockSpace),
-                        centerX - scaleRatio * (centerX - (indexX * blockSpace + blockWidth * 0.1)),
-                        centerY - scaleRatio * (centerY - (indexY * blockSpace + blockWidth * 0.7))
+                        id,
+                        centerX - scaleRatio * (centerX - (indexX * blockSpace + blockWidth * (0.5 - 0.09 * id.length())) * originalZoomFactor - margin),
+                        centerY - scaleRatio * (centerY - (indexY * blockSpace + blockWidth * 0.3) * originalZoomFactor - margin)
                 );
             }
+        }
 
         // Remove Clip
         ctx.restore();
+
+        // Then draw the inside blocks without clip region which will significantly improve performance
+        for (int indexX = blockIndexX; indexX < maxIndexX; indexX++) {
+            for (int indexY = blockIndexY; indexY < mavIndexY; indexY++) {
+                if (indexX + indexY * blockColumnCount >= blockCount) continue;
+                double x = centerX - scaleRatio * (centerX - indexX * blockSpace * originalZoomFactor - margin);
+                double y = centerY - scaleRatio * (centerY - indexY * blockSpace * originalZoomFactor - margin);
+
+                // let the inside block to be rendered later
+                if(Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                        + Math.pow(centerY - y - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                        > Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2))
+                    continue;
+
+                double opacity = 0.2 + 0.6 * (0.5 * (indexX * blockSpace * originalZoomFactor) / width + 0.5 * (indexY * blockSpace * originalZoomFactor) / height);
+                ctx.setFill(Color.web("#09c", opacity));
+                ctx.fillRect(
+                        x,
+                        y,
+                        blockWidth * scaleRatio * originalZoomFactor, blockWidth * scaleRatio * originalZoomFactor);
+                ctx.setFill(Color.web("#555", 0.8));
+
+                String id = Integer.toString(indexX + indexY * blockColumnCount);
+                ctx.fillText(
+                        id,
+                        centerX - scaleRatio * (centerX - (indexX * blockSpace + blockWidth * (0.5 - 0.09 * id.length())) * originalZoomFactor - margin),
+                        centerY - scaleRatio * (centerY - (indexY * blockSpace + blockWidth * 0.3) * originalZoomFactor - margin)
+                );
+            }
+        }
+
 
 
         // Add translucent effect to magnifier
@@ -160,6 +225,22 @@ public class InspectorMemoryCanvasController implements Initializable {
         ctx.restore();
     }
 
+
+    @SuppressWarnings("Duplicates")
+    private void updateBlockCount() {
+        final double width = canvas.getWidth() - 2 * margin;
+        final double height = canvas.getHeight() - 2 * margin;
+
+        double countPerPixel = Math.sqrt(blockCount / height / width);
+
+        this.blockColumnCount = (int) Math.ceil(countPerPixel * width);
+        this.blockRowCount = (int) Math.ceil(countPerPixel * height);
+
+        originalZoomFactor = Math.min(
+                width / this.blockColumnCount / blockSpace,
+                height / this.blockRowCount / blockSpace
+        );
+    }
 
     /**
      * @param percent must be a double number between 0 and 1

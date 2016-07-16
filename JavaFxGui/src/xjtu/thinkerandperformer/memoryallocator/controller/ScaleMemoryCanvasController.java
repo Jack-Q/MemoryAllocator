@@ -188,7 +188,7 @@ public class ScaleMemoryCanvasController implements Initializable {
              i < Math.min(this.blockRowCount, indexStartY + actualBlockRowCount); i++)
             for (int j = indexStartX;
                  j < Math.min(this.blockColumnCount, indexStartX + actualBLockColumnCount); j++) {
-                if (i * blockColumnCount + j > blockCount) break;
+                if (i * blockColumnCount + j >= blockCount) break;
                 ctx.fillRect(
                         (margin + j * blockSpace * originalZoomFactor - centerX) * scale + width / 2,
                         (margin + i * blockSpace * originalZoomFactor - centerY) * scale + height / 2,
@@ -208,6 +208,7 @@ public class ScaleMemoryCanvasController implements Initializable {
             }
     }
 
+    @SuppressWarnings("Duplicates")
     private void updateBlockCount() {
         double width = canvas.getWidth() - 2 * margin;
         double height = canvas.getHeight() - 2 * margin;
