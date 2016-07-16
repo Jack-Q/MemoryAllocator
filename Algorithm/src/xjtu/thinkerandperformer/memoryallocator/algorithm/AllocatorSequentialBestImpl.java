@@ -29,4 +29,9 @@ public class AllocatorSequentialBestImpl extends AllocatorSequential {
         if (memPool[bestPos + FULL_SIZE] >= (size + MIN_EXTRA)) return bestPos;
         else return -1;
     }
+
+
+    public int getBlockCount() {
+        return this.memPool.length;
+    }
 }

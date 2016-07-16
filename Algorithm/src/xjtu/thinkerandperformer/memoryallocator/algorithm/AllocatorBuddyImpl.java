@@ -291,6 +291,10 @@ public class AllocatorBuddyImpl implements AllocatorADT {
                 (blockPos - MEMORY_START_OFFSET) ^ (1 << k);
     }
 
+    public int getBlockCount() {
+        return this.memoryPool.length;
+    }
+
 
     //endregion
 

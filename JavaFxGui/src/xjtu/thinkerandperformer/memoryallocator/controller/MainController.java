@@ -4,7 +4,6 @@ package xjtu.thinkerandperformer.memoryallocator.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import xjtu.thinkerandperformer.memoryallocator.algorithm.MemManager;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.ICommand;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
@@ -164,6 +163,7 @@ abstract class MainController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Bind scale setter and indicator
         scaleFactorView.valueProperty().addListener(e -> {
             inspectorMemoryCanvasController.setScaleFactor(scaleFactorView.getValue() / 100);
             scaleMemoryCanvasController.setScaleFactor(scaleFactorView.getValue() / 100);
@@ -211,6 +211,7 @@ abstract class MainController implements Initializable {
         // Update the variable list
         updateVariableList();
         updateBlockList();
+        updateCanvas();
     }
 
     private void updateBlockList() {
@@ -247,5 +248,8 @@ abstract class MainController implements Initializable {
         alert.show();
     }
 
-
+    private void updateCanvas() {
+        inspectorMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
+        scaleMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
+    }
 }

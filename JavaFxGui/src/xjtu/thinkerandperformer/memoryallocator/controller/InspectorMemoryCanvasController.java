@@ -2,6 +2,7 @@ package xjtu.thinkerandperformer.memoryallocator.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
@@ -30,6 +31,7 @@ public class InspectorMemoryCanvasController implements Initializable {
     private double scaleRatio = 1.0d;
     private static final double averageRadius = (innerRadius + outerRadius) / 2;
 
+    private int blockCount = 0;
 
     @FXML
     public Label label;
@@ -74,8 +76,16 @@ public class InspectorMemoryCanvasController implements Initializable {
     }
 
     private void updateScene(double x, double y) {
+
         int width = (int) canvas.getWidth();
         int height = (int) canvas.getHeight();
+
+        if (blockCount == 0) {
+            Utility.showCenterMessage("No Memory Pool Initialized", width, height, ctx);
+            return;
+        }
+
+
         ctx.clearRect(0, 0, width, height);
         for (int h = padding; h < height - padding - blockWidth; h += blockSpace)
             for (int w = padding; w < width - padding - blockWidth; w += blockSpace) {
@@ -138,7 +148,7 @@ public class InspectorMemoryCanvasController implements Initializable {
 
         // Add translucent effect to magnifier
         ctx.setFill(new RadialGradient(0, 0, centerX, centerY, averageRadius, false, CycleMethod.NO_CYCLE,
-                new Stop(0.4, Color.web("#fff", 0)),new Stop(0.8, Color.web("#fff", 0.2)),  new Stop(1, Color.web("#fff", 0.8))));
+                new Stop(0.4, Color.web("#fff", 0)), new Stop(0.8, Color.web("#fff", 0.2)), new Stop(1, Color.web("#fff", 0.8))));
         ctx.fillOval(centerX - averageRadius, centerY - averageRadius, 2 * averageRadius, 2 * averageRadius);
 
         // Draw outline
@@ -159,4 +169,10 @@ public class InspectorMemoryCanvasController implements Initializable {
         percent = Math.max(percent, 0.0d);
         scaleRatio = minScaleRatio + (maxScaleRatio - minScaleRatio) * percent;
     }
+
+    public void setBlockCount(int blockCount) {
+        this.blockCount = blockCount;
+        updateScene();
+    }
+
 }

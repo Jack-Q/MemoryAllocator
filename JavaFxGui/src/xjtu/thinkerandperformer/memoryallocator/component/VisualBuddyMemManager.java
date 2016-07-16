@@ -26,4 +26,9 @@ public class VisualBuddyMemManager extends VisualMemManager {
     public List<BlockInfo> getBlockInfoList() {
         return allocatorBuddy.getBlockInfoList(getSortedVariableList());
     }
+
+    @Override
+    public int getBlockCount() {
+        return allocatorBuddy.getBlockCount();
+    }
 }

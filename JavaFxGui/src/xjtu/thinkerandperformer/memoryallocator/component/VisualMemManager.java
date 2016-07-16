@@ -45,4 +45,6 @@ public abstract class VisualMemManager extends MemManager {
 
 
     public abstract List<BlockInfo> getBlockInfoList();
+
+    public abstract int getBlockCount();
 }

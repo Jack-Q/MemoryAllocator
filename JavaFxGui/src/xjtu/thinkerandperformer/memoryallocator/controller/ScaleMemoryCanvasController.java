@@ -15,7 +15,6 @@ import javafx.util.Duration;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 
 public class ScaleMemoryCanvasController implements Initializable {
@@ -26,7 +25,7 @@ public class ScaleMemoryCanvasController implements Initializable {
     private static final double blockWidth = 28;
     private static final double blockSpace = 30;
 
-    private int blockCount = 320;
+    private int blockCount = 0;
     private int blockRowCount = 20;
     private int blockColumnCount = 16;
     private double originalZoomFactor = 0.0d;
@@ -167,6 +166,11 @@ public class ScaleMemoryCanvasController implements Initializable {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
 
+        if(blockCount == 0){
+            Utility.showCenterMessage("No Memory Pool Initialized", width, height, ctx);
+            return;
+        }
+
         ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         ctx.setFill(Color.web("#000", scale / maxZoomFactor));
         ctx.fill();
@@ -227,6 +231,9 @@ public class ScaleMemoryCanvasController implements Initializable {
         return Math.min(Math.max(centerY, canvas.getHeight() / 2 / zoomFactor), canvas.getHeight() - canvas.getHeight() / 2 / zoomFactor);
     }
 
+
+    // region memory information
+
     /**
      * @param percent must be a double number between 0 and 1
      */
@@ -241,4 +248,10 @@ public class ScaleMemoryCanvasController implements Initializable {
         this.scaleChangeListener = c;
     }
 
+
+    public void setBlockCount(int blockCount){
+        this.blockCount = blockCount;
+        repaint();
+    }
+    // endregion
 }

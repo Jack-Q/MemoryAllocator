@@ -25,6 +25,11 @@ public class VisualSequentialMemManager extends VisualMemManager {
     public List<BlockInfo> getBlockInfoList() {
         return sequentialBest.getBlockInfoList(getSortedVariableList());
     }
+
+    @Override
+    public int getBlockCount() {
+        return this.sequentialBest.getBlockCount();
+    }
 }
 
 
