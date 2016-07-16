@@ -6,7 +6,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotA
 
 import java.util.List;
 
-interface AllocatorADT {
+public interface AllocatorADT {
 
     /*初始化存储池*/
     void init(int size);

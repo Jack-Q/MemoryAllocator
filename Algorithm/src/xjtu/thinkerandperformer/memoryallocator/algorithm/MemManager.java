@@ -13,7 +13,7 @@ public class MemManager {
     private Map<String, Variable> varMap;
 
     /*初始化存储池*/
-    void init(int size) throws NumberOutOfBoundsException {
+    public void init(int size) throws NumberOutOfBoundsException {
         if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
 
         //        allocator = new AllocatorSequentialBestImpl(size);
@@ -22,7 +22,7 @@ public class MemManager {
     }
 
     /*为变量申请空间*/
-    void newVariable(String variableName, int size) throws MemoryPoolUninitializedException, IllegalParameterException, InsufficientMemoryPoolException {
+    public void newVariable(String variableName, int size) throws MemoryPoolUninitializedException, IllegalParameterException, InsufficientMemoryPoolException {
         if (size <= 0) throw new NumberOutOfBoundsException();//抛出异常
         if (allocator == null) throw new MemoryPoolUninitializedException();
         if (!variableName.matches("[A-Za-z_$][A-Za-z0-9_$]{0,6}")) throw new IllegalVariableNameException();
@@ -33,7 +33,7 @@ public class MemManager {
     }
 
     /*向变量存储空间写入数据*/
-    void write(String variableName, String value) throws MemoryPoolUninitializedException, VariableNotFoundException, InsufficientVariableSizeException {
+    public void write(String variableName, String value) throws MemoryPoolUninitializedException, VariableNotFoundException, InsufficientVariableSizeException {
         if (allocator == null) throw new MemoryPoolUninitializedException();
         if (!varMap.containsKey(variableName)) throw new VariableNotFoundException();
 
@@ -41,7 +41,7 @@ public class MemManager {
     }
 
     /*从变量存储空间读数据*/
-    void read(String variableName) throws VariableNotFoundException, MemoryPoolUninitializedException, VariableNotAssignedException {
+    public void read(String variableName) throws VariableNotFoundException, MemoryPoolUninitializedException, VariableNotAssignedException {
         if (allocator == null) throw new MemoryPoolUninitializedException();
         if (!varMap.containsKey(variableName)) throw new VariableNotFoundException();
 
@@ -49,7 +49,7 @@ public class MemManager {
     }
 
     /*删除变量*/
-    void deleteVariable(String variableName) throws MemoryPoolUninitializedException, VariableNotFoundException {
+    public void deleteVariable(String variableName) throws MemoryPoolUninitializedException, VariableNotFoundException {
         if (allocator == null) throw new MemoryPoolUninitializedException();
         if (!varMap.containsKey(variableName)) throw new VariableNotFoundException();
 

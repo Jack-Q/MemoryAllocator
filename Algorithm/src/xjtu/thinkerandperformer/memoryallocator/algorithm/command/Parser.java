@@ -1,11 +1,11 @@
-package xjtu.thinkerandperformer.memoryallocator.algorithm;
+package xjtu.thinkerandperformer.memoryallocator.algorithm.command;
 
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.IllegalCommandException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Parser {
+public class Parser {
 
     public static ICommand parse(String primitiveCommand) throws IllegalCommandException {
         String command = " " + primitiveCommand;    //强制在命令头部添加空格

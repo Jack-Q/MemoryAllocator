@@ -10,7 +10,7 @@ import java.util.List;
  * Buddy method is to allocate the least size of the power of 2 from memory,
  */
 
-class AllocatorBuddyImpl implements AllocatorADT {
+public class AllocatorBuddyImpl implements AllocatorADT {
 
     //region magic numbers
     // MEMORY STRUCTURE: [k] + [FreeList] + [Block]...[Block]

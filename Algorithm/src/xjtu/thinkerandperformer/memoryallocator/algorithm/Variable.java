@@ -1,6 +1,6 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
-class Variable {
+public class Variable {
 
     private MemHandle handle;
 

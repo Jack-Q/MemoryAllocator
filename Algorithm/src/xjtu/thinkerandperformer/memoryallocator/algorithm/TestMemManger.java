@@ -1,5 +1,7 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
+import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
+
 import java.util.Scanner;
 
 public class TestMemManger {

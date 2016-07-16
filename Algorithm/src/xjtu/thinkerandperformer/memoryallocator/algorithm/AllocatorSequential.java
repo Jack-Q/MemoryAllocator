@@ -8,7 +8,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotA
 import java.util.Iterator;
 import java.util.List;
 
-abstract class AllocatorSequential implements AllocatorADT {
+public abstract class AllocatorSequential implements AllocatorADT {
 
     protected static final int START_TAG = 0;   // Start tag offset 偏移
     protected static final int FULL_SIZE = 1;   // Size field offset

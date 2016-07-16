@@ -2,7 +2,7 @@ package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
 
-class AllocatorSequentialWorstImpl extends AllocatorSequential {
+public class AllocatorSequentialWorstImpl extends AllocatorSequential {
 
     public AllocatorSequentialWorstImpl(int size) throws NumberOutOfBoundsException {
         super(size);

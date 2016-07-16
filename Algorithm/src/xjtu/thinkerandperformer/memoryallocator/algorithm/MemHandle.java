@@ -1,6 +1,6 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
-class MemHandle { // An access handle for the memory manager
+public class MemHandle { // An access handle for the memory manager
 
     int pos;               // Position of data in memory 数据在存储池中的位置
 
