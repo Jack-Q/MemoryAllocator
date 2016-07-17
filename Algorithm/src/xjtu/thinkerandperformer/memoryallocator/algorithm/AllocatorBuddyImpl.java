@@ -309,7 +309,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
         i++;
 
         for (; i < MEMORY_START_OFFSET; i++)
-            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.MetaLinkBlock, memoryPool[i]));
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.MetaPointerBlock, memoryPool[i]));
 
         // Block Part
         for (; i < memoryPool.length; i++) {

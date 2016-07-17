@@ -99,7 +99,7 @@ public class InspectorMemoryCanvasController implements Initializable {
                     double h = margin + i * blockSpace * originalZoomFactor;
                     double w = margin + j * blockSpace * originalZoomFactor;
                     int index = i * blockColumnCount + j;
-                    drawBitBlock(ctx, w, h, index, blockInformationList.get(index), blockWidth * originalZoomFactor);
+                    Utility.drawBitBlock(ctx, w, h, index, blockInformationList.get(index), blockWidth * originalZoomFactor);
 
                 }
 
@@ -165,7 +165,7 @@ public class InspectorMemoryCanvasController implements Initializable {
 
 
                 int index = indexX + indexY * blockColumnCount;
-                drawBitBlock(ctx, x, y, index, blockInformationList.get(index), blockWidth * scaleRatio * originalZoomFactor);
+                Utility.drawBitBlock(ctx, x, y, index, blockInformationList.get(index), blockWidth * scaleRatio * originalZoomFactor);
             }
         }
 
@@ -186,7 +186,7 @@ public class InspectorMemoryCanvasController implements Initializable {
                         Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2)))
                     continue;
                 int index = indexX + indexY * blockColumnCount;
-                drawBitBlock(ctx, x, y, index, blockInformationList.get(index), blockWidth * scaleRatio * originalZoomFactor);
+                Utility.drawBitBlock(ctx, x, y, index, blockInformationList.get(index), blockWidth * scaleRatio * originalZoomFactor);
             }
         }
 
@@ -203,31 +203,6 @@ public class InspectorMemoryCanvasController implements Initializable {
 
         // Restore global context
         ctx.restore();
-    }
-
-    private void drawBitBlock(GraphicsContext ctx, double positionX, double positionY, int index, BitBlockInfo bitBlockInfo, double size) {
-        ctx.setFill(bitBlockInfo.getType().getColor());
-        ctx.fillRect(
-                positionX,
-                positionY,
-                size, size);
-
-        if (size < 30) return;
-
-        ctx.setFill(Color.web("#39c", 0.8));
-        String contentValue = String.valueOf(bitBlockInfo.getValue());
-        ctx.fillText(
-                contentValue,
-                positionX + size * (0.5 - 0.09 * contentValue.length()),
-                positionY + size / 2 - 3);
-
-        ctx.setFill(Color.web("#555", 0.4));
-        String indexString = String.valueOf(index);
-        ctx.fillText(
-                indexString,
-                positionX + size * (0.5 - 0.09 * indexString.length()),
-                positionY + size - 3);
-
     }
 
 

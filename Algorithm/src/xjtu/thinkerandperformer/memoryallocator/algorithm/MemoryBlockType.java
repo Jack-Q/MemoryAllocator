@@ -6,7 +6,7 @@ import javafx.scene.paint.Paint;
 
 public enum MemoryBlockType {
     MetaSizeBlock(Color.web("#0030cc", 0.3)),
-    MetaLinkBlock(Color.web("#2060ba", 0.3)),
+    MetaPointerBlock(Color.web("#2060ba", 0.3)),
     MetaTagBlock(Color.web("#abda30", 0.3)),
     DataBlock(Color.web("#505662", 0.7)),
     FullSizeBlock(Color.web("#dad975", 0.7)),

@@ -169,7 +169,7 @@ public class ScaleMemoryCanvasController implements Initializable {
         double width = canvas.getWidth();
         double height = canvas.getHeight();
 
-        if(blockCount == 0){
+        if (blockCount == 0) {
             Utility.showCenterMessage("No Memory Pool Initialized", width, height, ctx);
             return;
         }
@@ -191,23 +191,16 @@ public class ScaleMemoryCanvasController implements Initializable {
              i < Math.min(this.blockRowCount, indexStartY + actualBlockRowCount); i++)
             for (int j = indexStartX;
                  j < Math.min(this.blockColumnCount, indexStartX + actualBLockColumnCount); j++) {
-                if (i * blockColumnCount + j >= blockCount) break;
-                ctx.fillRect(
+                int index = i * blockColumnCount + j;
+                if (index >= blockCount) break;
+                Utility.drawBitBlock(
+                        ctx,
                         (margin + j * blockSpace * originalZoomFactor - centerX) * scale + width / 2,
                         (margin + i * blockSpace * originalZoomFactor - centerY) * scale + height / 2,
-                        actualBlockWidth, actualBlockWidth);
-                if (scale * originalZoomFactor > detailZoomFactor) {
-                    ctx.save();
-                    ctx.setFont(new Font("Monaco", 13 * originalZoomFactor * scale));
-                    ctx.setFill(Color.web("#0af", 0.8));
-                    ctx.fillText(
-                            String.format("%2d", i * blockColumnCount + j),
-                            (margin + j * blockSpace * originalZoomFactor - centerX) * scale + width / 2 + 5,
-                            (margin + i * blockSpace * originalZoomFactor - centerY) * scale + height / 2 + 35
-                    );
-                    ctx.restore();
-                }
-
+                        index,
+                        blockInformationList.get(index),
+                        actualBlockWidth
+                );
             }
     }
 
@@ -253,7 +246,7 @@ public class ScaleMemoryCanvasController implements Initializable {
     }
 
 
-    public void setBlockCount(int blockCount){
+    public void setBlockCount(int blockCount) {
         this.blockCount = blockCount;
         repaint();
     }
