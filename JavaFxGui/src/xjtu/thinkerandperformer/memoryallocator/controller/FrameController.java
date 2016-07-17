@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -40,7 +39,7 @@ public class FrameController implements Initializable {
     }
 
 
-    static class SuggestionCellModel {
+    private static class SuggestionCellModel {
         private final String value;
         private final String explanation;
 
@@ -74,8 +73,10 @@ public class FrameController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        FXMLLoader mainFxmlLoader;
+        // Load main views
         try {
+            FXMLLoader mainFxmlLoader;
+
             mainFxmlLoader = new FXMLLoader(this.getClass().getResource("../view/Main.fxml"));
             mainFxmlLoader.setController(sequentialMethodPanelController = new MainControllerSequentialImpl());
             sequentialMethodPanel.getChildren().add(mainFxmlLoader.load());
@@ -84,36 +85,41 @@ public class FrameController implements Initializable {
             buddyMethodPanel.getChildren().add(mainFxmlLoader.load());
         } catch (Exception ignore) {
         }
+
+
         commandLine.setCellFactory(m -> new ListCell<SuggestionCellModel>() {
             private final TextFlow textFlow;
             private final Text value;
             private final Text explanation;
 
+            // Initialize Prompt View Template
             {
                 setContentDisplay(ContentDisplay.CENTER);
                 value = new Text();
                 value.setFont(Font.font("Monaco", 1 + Font.getDefault().getSize()));
-                value.setFill(Color.web("#fefeee"));
-                value.setStyle("-fx-text-fill: #fefeee; -fx-font-weight: 800;");
+                value.setStyle("-fx-text-fill: #fefeee; /*noinspection CssUnitlessNumber*/-fx-font-weight: 800;");
+                value.applyCss();
                 explanation = new Text();
-                explanation.setStyle("-fx-text-fill: #cccccc; -fx-font-weight: 200; -fx-font-style: italic; -fx-text-alignment: right");
+                explanation.setStyle("-fx-text-fill: #cccccc; /*noinspection CssUnitlessNumber*/-fx-font-weight: 200; -fx-font-style: italic; -fx-text-alignment: right");
+                explanation.applyCss();
                 textFlow = new TextFlow();
                 textFlow.getChildren().addAll(value, explanation);
+                textFlow.applyCss();
             }
 
             @Override
             protected void updateItem(SuggestionCellModel item, boolean empty) {
                 super.updateItem(item, empty);
                 if (item == null || empty) {
-                    value.setText("12");
-                    explanation.setText("32");
+                    value.setText("");
+                    explanation.setText("");
                 } else {
                     value.setText(item.getValue() + "   ");
                     explanation.setText(item.getExplanation());
                 }
-                getChildren().clear();
-                getChildren().add(textFlow);
-
+                this.getChildren().clear();
+                this.getChildren().add(textFlow);
+                this.applyCss();
             }
         });
         commandLine.setConverter(new StringConverter<SuggestionCellModel>() {
@@ -156,18 +162,25 @@ public class FrameController implements Initializable {
         commandLine.show();
     }
 
+
+    private List<SuggestionCellModel> defaultSuggestion = new ArrayList<>();
+
+    {
+        defaultSuggestion.add(new SuggestionCellModel("init", "initialize memory allocator with specified size"));
+        defaultSuggestion.add(new SuggestionCellModel("new", "create a new variable with specified size"));
+        defaultSuggestion.add(new SuggestionCellModel("read", "read the content stored in a variable"));
+        defaultSuggestion.add(new SuggestionCellModel("write", "write content to a defined variable"));
+        defaultSuggestion.add(new SuggestionCellModel("delete", "delete a defined variable and free its memory space"));
+    }
+
     private List<SuggestionCellModel> populateSuggestions(String input) {
+        List<String> currentVariableList = currentController().getVariableList();
         List<SuggestionCellModel> suggestions = new ArrayList<>();
-        if (input == null || input.trim().isEmpty()) {
-            suggestions.add(new SuggestionCellModel("init", "initialize memory allocator with specified size"));
-            suggestions.add(new SuggestionCellModel("new", "create a new variable with specified size"));
-            suggestions.add(new SuggestionCellModel("read", "read the content stored in a variable"));
-            suggestions.add(new SuggestionCellModel("write", "write content to a defined variable"));
-            suggestions.add(new SuggestionCellModel("delete", "delete a defined variable and free its memory space"));
-            return suggestions;
-        }
-        for (int i = 0; i < 10; i++) {
-            suggestions.add(new SuggestionCellModel(input + i));
+
+
+        // Fill up the suggestion list
+        for (int i = 0; suggestions.size() < 5 && i < defaultSuggestion.size(); i++) {
+            suggestions.add(defaultSuggestion.get(i));
         }
         return suggestions;
     }

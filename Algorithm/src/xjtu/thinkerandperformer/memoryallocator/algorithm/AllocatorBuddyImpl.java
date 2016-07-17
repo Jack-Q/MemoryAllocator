@@ -60,11 +60,12 @@ public class AllocatorBuddyImpl implements AllocatorADT {
 
     @Override
     public Variable newVariable(String variableName, int size) {
-        int addr;
+        int address;
         int blockSize = size + BLOCK_EXTRA_SIZE;
         final int k = leastPowerOf2(blockSize);
         int currentK;
         // find the smallest available block
+        //noinspection StatementWithEmptyBody
         for (currentK = k; currentK <= getMemoryK() && getFreeList(currentK) == MAGIC_POSITION_NONE; currentK++)
             ;
         // No suitable space left
@@ -80,16 +81,16 @@ public class AllocatorBuddyImpl implements AllocatorADT {
             initFreeBlock(secondBlock, currentK - 1, MAGIC_POSITION_NONE, firstBlock);
             setFreeList(currentK - 1, firstBlock);
         }
-        addr = getFreeList(k);
-        if(addr == MAGIC_POSITION_NONE) return null;
-        setBlockState(addr, false);
+        address = getFreeList(k);
+        if(address == MAGIC_POSITION_NONE) return null;
+        setBlockState(address, false);
 
-        int blockNextFree = getBlockNextFree(addr);
-        setBlockNextFree(addr, MAGIC_POSITION_NONE);
+        int blockNextFree = getBlockNextFree(address);
+        setBlockNextFree(address, MAGIC_POSITION_NONE);
 
         setFreeList(k, blockNextFree);
         setBlockPrevFree(blockNextFree, MAGIC_POSITION_NONE);
-        return new Variable(new MemHandle(addr + BLOCK_CONTENT_OFFSET));
+        return new Variable(new MemHandle(address + BLOCK_CONTENT_OFFSET));
     }
 
     @Override

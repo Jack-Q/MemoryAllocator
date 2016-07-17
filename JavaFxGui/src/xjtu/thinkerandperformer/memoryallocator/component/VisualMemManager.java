@@ -9,6 +9,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfB
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotAssignedException;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotFoundException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,4 +51,11 @@ public abstract class VisualMemManager extends MemManager {
     public abstract int getBlockCount();
 
     public abstract List<BitBlockInfo> getBitBlockInformationList();
+
+    public List<String> getVariableList() {
+        // If no memory pool initialized, return an empty variable list
+        if (varMap == null) return new ArrayList<>();
+
+        return new ArrayList<>(varMap.keySet());
+    }
 }

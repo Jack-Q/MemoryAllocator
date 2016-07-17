@@ -5,13 +5,11 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.MemoryPoolUn
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotAssignedException;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotFoundException;
 
-/**
- * Created by jackq on 7/16/16.
- */
-public  class ReadCommand implements ICommand {
-    String varName;
 
-    public ReadCommand(String varName) {
+class ReadCommand implements ICommand {
+    private String varName;
+
+    ReadCommand(String varName) {
         this.varName = varName;
     }
 

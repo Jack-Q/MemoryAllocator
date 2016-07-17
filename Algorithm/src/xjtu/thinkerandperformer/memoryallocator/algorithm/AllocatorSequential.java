@@ -26,16 +26,16 @@ public abstract class AllocatorSequential implements AllocatorADT {
     protected static final int FREE_OVERHEAD = 6; // Number free fields overhead有间接费用、管理费用的意思
     protected static final int RES_OVERHEAD = 4;  // Number of res fields
     protected static final int MIN_REQUEST = 2; // Smallest data request
-    protected static final int MAX_SHORTINT = 32767;
-    protected static final int MIN_SHORTINT = -32768;
-    protected static final int MAX_MEMPOOLSIZE = 32767;
+    protected static final int MAX_SHORT_INT = 32767;
+    protected static final int MIN_SHORT_INT = -32768;
+    protected static final int MAX_MEM_POOL_SIZE = 32767;
 
     short[] memPool;             // 存储池
     MemHandle freelist;         // 指向可利用空间表
 
     /*构造方法*/
     AllocatorSequential(int size) throws NumberOutOfBoundsException {
-        if (size > MAX_MEMPOOLSIZE) throw new NumberOutOfBoundsException();
+        if (size > MAX_MEM_POOL_SIZE) throw new NumberOutOfBoundsException();
         init(size >= 6 ? size : 6);
     }
 
@@ -53,7 +53,7 @@ public abstract class AllocatorSequential implements AllocatorADT {
     /*为变量申请空间*/
     @Override
     public Variable newVariable(String variableName, int size) throws InsufficientMemoryPoolException {
-        if (size > MAX_MEMPOOLSIZE) throw new InsufficientMemoryPoolException();
+        if (size > MAX_MEM_POOL_SIZE) throw new InsufficientMemoryPoolException();
         size = (size < MIN_REQUEST) ? MIN_REQUEST : size;
 
         int start = pickFreeBlock(size); //寻找空闲块
@@ -181,33 +181,32 @@ public abstract class AllocatorSequential implements AllocatorADT {
 
             //在F之后找到了一个空闲块S
             else if (memPool[j] == FREE) {
-                int startOfSuccBlock = j;
-                int sizeOfSuccBlock = memPool[startOfSuccBlock + FULL_SIZE];
-                int endOfSuccBlock = startOfSuccBlock + sizeOfSuccBlock + FREE_END_TAG;
+                int startOfSuccessBlock = j;
+                int sizeOfSuccessBlock = memPool[startOfSuccessBlock + FULL_SIZE];
+                int endOfSuccessBlock = startOfSuccessBlock + sizeOfSuccessBlock + FREE_END_TAG;
 
-                if (startOfSuccBlock == endPos + 1) {//F与S相邻，合并二者
-                    memPool[memPool[startOfSuccBlock + R_PTR] + L_PTR] = memPool[memPool[startOfSuccBlock + L_PTR] + R_PTR] = (short) startPos;
+                if (startOfSuccessBlock == endPos + 1) {//F与S相邻，合并二者
+                    memPool[memPool[startOfSuccessBlock + R_PTR] + L_PTR] = memPool[memPool[startOfSuccessBlock + L_PTR] + R_PTR] = (short) startPos;
 
                     memPool[startPos] = FREE;
-                    memPool[startPos + FULL_SIZE] += sizeOfSuccBlock + RES_OVERHEAD;
-                    memPool[startPos + L_PTR] = memPool[startOfSuccBlock + L_PTR];
-                    memPool[startPos + R_PTR] = memPool[startOfSuccBlock + R_PTR];
-                    memPool[endPos] = memPool[startOfSuccBlock] = 0;//必须消除不再作为标记位的TAG
-                    memPool[endOfSuccBlock - 1] = memPool[startPos + FULL_SIZE];
+                    memPool[startPos + FULL_SIZE] += sizeOfSuccessBlock + RES_OVERHEAD;
+                    memPool[startPos + L_PTR] = memPool[startOfSuccessBlock + L_PTR];
+                    memPool[startPos + R_PTR] = memPool[startOfSuccessBlock + R_PTR];
+                    memPool[endPos] = memPool[startOfSuccessBlock] = 0;//必须消除不再作为标记位的TAG
+                    memPool[endOfSuccessBlock - 1] = memPool[startPos + FULL_SIZE];
 
                     freelist = new MemHandle(startPos);//因为freelist可能是指向S块的
 
                 } else {//F与S不相邻，指针互指
-                    memPool[startPos + L_PTR] = memPool[startOfSuccBlock + L_PTR];
-                    memPool[startPos + R_PTR] = (short) startOfSuccBlock;
-                    memPool[startOfSuccBlock + L_PTR] = memPool[memPool[startPos + L_PTR] + R_PTR] = (short) startPos;
+                    memPool[startPos + L_PTR] = memPool[startOfSuccessBlock + L_PTR];
+                    memPool[startPos + R_PTR] = (short) startOfSuccessBlock;
+                    memPool[startOfSuccessBlock + L_PTR] = memPool[memPool[startPos + L_PTR] + R_PTR] = (short) startPos;
 
                     memPool[startPos] = memPool[endPos] = FREE;
                     memPool[startPos + FULL_SIZE] = memPool[endPos - 1] = (short) (size + RES_OVERHEAD - FREE_OVERHEAD);
                 }
             }
 
-            variable = null;
             return;
 
         } else {
@@ -215,22 +214,22 @@ public abstract class AllocatorSequential implements AllocatorADT {
             int sizeOfPreBlock = memPool[endOfPreBlock - 1];
             int startOfPreBlock = endOfPreBlock - FREE_END_TAG - sizeOfPreBlock;
 
-            int startOfSuccBlock = j;
-            int sizeOfSuccBlock = memPool[startOfSuccBlock + FULL_SIZE];
-            int endOfSuccBlock = startOfSuccBlock + sizeOfSuccBlock + FREE_END_TAG;
+            int startOfSuccessBlock = j;
+            int sizeOfSuccessBlock = memPool[startOfSuccessBlock + FULL_SIZE];
+            int endOfSuccessBlock = startOfSuccessBlock + sizeOfSuccessBlock + FREE_END_TAG;
 
-            if ((endOfPreBlock == startPos - 1) && (startOfSuccBlock == endPos + 1)) {
-                memPool[endOfPreBlock] = memPool[startPos] = memPool[endPos] = memPool[startOfSuccBlock] = 0;
-                memPool[startOfPreBlock + FULL_SIZE] = memPool[endOfSuccBlock - 1] = (short) (endOfSuccBlock - startOfPreBlock + 1 - FREE_OVERHEAD);
-                memPool[startOfPreBlock + R_PTR] = memPool[startOfSuccBlock + R_PTR];
-                memPool[memPool[sizeOfSuccBlock + R_PTR] + L_PTR] = (short) startOfPreBlock;
+            if ((endOfPreBlock == startPos - 1) && (startOfSuccessBlock == endPos + 1)) {
+                memPool[endOfPreBlock] = memPool[startPos] = memPool[endPos] = memPool[startOfSuccessBlock] = 0;
+                memPool[startOfPreBlock + FULL_SIZE] = memPool[endOfSuccessBlock - 1] = (short) (endOfSuccessBlock - startOfPreBlock + 1 - FREE_OVERHEAD);
+                memPool[startOfPreBlock + R_PTR] = memPool[startOfSuccessBlock + R_PTR];
+                memPool[memPool[sizeOfSuccessBlock + R_PTR] + L_PTR] = (short) startOfPreBlock;
 
                 freelist = new MemHandle(startOfPreBlock);//因为freelist可能是指向S块的
 
                 variable.setHandle(null);
                 return;
             }
-            if ((endOfPreBlock == startPos - 1) && (startOfSuccBlock != endPos + 1)) {
+            if ((endOfPreBlock == startPos - 1) && (startOfSuccessBlock != endPos + 1)) {
                 memPool[startOfPreBlock + FULL_SIZE] += size + RES_OVERHEAD;
                 memPool[endOfPreBlock] = memPool[startPos] = 0;//必须消除不再作为标记位的TAG
                 memPool[endPos] = FREE;
@@ -240,27 +239,27 @@ public abstract class AllocatorSequential implements AllocatorADT {
                 variable.setHandle(null);
                 return;
             }
-            if ((endOfPreBlock != startPos - 1) && (startOfSuccBlock == endPos + 1)) {
-                memPool[memPool[startOfSuccBlock + R_PTR] + L_PTR] = memPool[memPool[startOfSuccBlock + L_PTR] + R_PTR] = (short) startPos;
+            if ((endOfPreBlock != startPos - 1) && (startOfSuccessBlock == endPos + 1)) {
+                memPool[memPool[startOfSuccessBlock + R_PTR] + L_PTR] = memPool[memPool[startOfSuccessBlock + L_PTR] + R_PTR] = (short) startPos;
                 memPool[startPos] = FREE;
-                memPool[startPos + FULL_SIZE] += sizeOfSuccBlock + RES_OVERHEAD;
-                memPool[startPos + L_PTR] = memPool[startOfSuccBlock + L_PTR];
-                memPool[startPos + R_PTR] = memPool[startOfSuccBlock + R_PTR];
-                memPool[endPos] = memPool[startOfSuccBlock] = 0;//必须消除不再作为标记位的TAG
-                memPool[endOfSuccBlock - 1] = memPool[startPos + FULL_SIZE];
+                memPool[startPos + FULL_SIZE] += sizeOfSuccessBlock + RES_OVERHEAD;
+                memPool[startPos + L_PTR] = memPool[startOfSuccessBlock + L_PTR];
+                memPool[startPos + R_PTR] = memPool[startOfSuccessBlock + R_PTR];
+                memPool[endPos] = memPool[startOfSuccessBlock] = 0;//必须消除不再作为标记位的TAG
+                memPool[endOfSuccessBlock - 1] = memPool[startPos + FULL_SIZE];
 
                 freelist = new MemHandle(startPos);//因为freelist可能是指向S块的
-                memPool[startOfPreBlock + R_PTR] = memPool[memPool[startOfSuccBlock + R_PTR] + L_PTR] = (short) startPos;
+                memPool[startOfPreBlock + R_PTR] = memPool[memPool[startOfSuccessBlock + R_PTR] + L_PTR] = (short) startPos;
 
                 variable.setHandle(null);
                 return;
             }
-            if ((endOfPreBlock != startPos - 1) && (startOfSuccBlock != endPos + 1)) {
+            if ((endOfPreBlock != startPos - 1) && (startOfSuccessBlock != endPos + 1)) {
                 memPool[startPos] = memPool[endPos] = FREE;
                 memPool[startPos + FULL_SIZE] = memPool[endPos - 1] = (short) (size + RES_OVERHEAD - FREE_OVERHEAD);
                 memPool[L_PTR] = (short) startOfPreBlock;
-                memPool[R_PTR] = (short) startOfSuccBlock;
-                memPool[startOfPreBlock + R_PTR] = memPool[startOfSuccBlock + L_PTR] = (short) startPos;
+                memPool[R_PTR] = (short) startOfSuccessBlock;
+                memPool[startOfPreBlock + R_PTR] = memPool[startOfSuccessBlock + L_PTR] = (short) startPos;
 
                 variable.setHandle(null);
                 return;

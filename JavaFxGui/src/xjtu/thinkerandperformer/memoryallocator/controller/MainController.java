@@ -42,6 +42,10 @@ abstract class MainController implements Initializable {
 
     abstract VisualMemManager getMemoryManager();
 
+    List<String> getVariableList() {
+        return getMemoryManager().getVariableList();
+    }
+
 
     enum ConsoleCellType {
         Input, MessageOutput, ErrorOutput, DataOutput

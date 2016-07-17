@@ -4,8 +4,8 @@ public class MemHandle { // An access handle for the memory manager
 
     private int pos;               // Position of data in memory 数据在存储池中的位置
 
-    MemHandle(int inpos) {  //带参构造方法
-        pos = inpos;
+    MemHandle(int inPos) {  //带参构造方法
+        pos = inPos;
     }
 
     public int getPos() {  //返回句柄值

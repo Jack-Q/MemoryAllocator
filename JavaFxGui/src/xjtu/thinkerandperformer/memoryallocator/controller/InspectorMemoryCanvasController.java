@@ -57,11 +57,9 @@ public class InspectorMemoryCanvasController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("Init Called");
 
         ctx = canvas.getGraphicsContext2D();
 
-        System.out.println("Setup binding");
         canvas.setHeight(label.getHeight());
         canvas.setWidth(label.getHeight());
         canvas.widthProperty().addListener(observable -> updateScene());
@@ -84,6 +82,7 @@ public class InspectorMemoryCanvasController implements Initializable {
 
         int width = (int) canvas.getWidth();
         int height = (int) canvas.getHeight();
+        ctx.clearRect(0, 0, width, height);
 
         if (blockCount == 0) {
             Utility.showCenterMessage("No Memory Pool Initialized", width, height, ctx);
@@ -91,7 +90,6 @@ public class InspectorMemoryCanvasController implements Initializable {
         }
         updateBlockCount();
 
-        ctx.clearRect(0, 0, width, height);
 
         for (int i = 0; i < blockRowCount; i++)
             for (int j = 0; j < blockColumnCount; j++)
@@ -109,10 +107,6 @@ public class InspectorMemoryCanvasController implements Initializable {
     }
 
     private void drawInspector(double centerX, double centerY) {
-
-        int width = (int) canvas.getWidth();
-        int height = (int) canvas.getHeight();
-
 
         // Save global context
         ctx.save();
@@ -225,18 +219,18 @@ public class InspectorMemoryCanvasController implements Initializable {
     /**
      * @param percent must be a double number between 0 and 1
      */
-    public void setScaleFactor(double percent) {
+    void setScaleFactor(double percent) {
         percent = Math.min(percent, 1.0d);
         percent = Math.max(percent, 0.0d);
         scaleRatio = minScaleRatio + (maxScaleRatio / originalZoomFactor- minScaleRatio) * percent;
     }
 
-    public void setBlockCount(int blockCount) {
+    void setBlockCount(int blockCount) {
         this.blockCount = blockCount;
         updateScene();
     }
 
-    public void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
+    void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
         this.blockInformationList = blockInformationList;
         updateScene();
     }

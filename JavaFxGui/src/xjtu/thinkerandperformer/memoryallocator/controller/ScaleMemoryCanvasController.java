@@ -9,7 +9,6 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
@@ -143,8 +142,8 @@ public class ScaleMemoryCanvasController implements Initializable {
             }
 
             @Override
-            protected void interpolate(double frac) {
-                double scale = original + frac * delta;
+            protected void interpolate(double fraction) {
+                double scale = original + fraction * delta;
                 repaint(
                         ensureCenterX(zoomCenterX - (zoomCenterX - centerX) / scale, scale),
                         ensureCenterY(zoomCenterY - (zoomCenterY - centerY) / scale, scale),

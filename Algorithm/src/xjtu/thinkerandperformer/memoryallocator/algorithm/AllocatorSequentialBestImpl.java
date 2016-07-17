@@ -14,7 +14,7 @@ public class AllocatorSequentialBestImpl extends AllocatorSequential {
         int freeStart = freelist.getPos();
 
         int bestPos = freeStart;
-        int sizeOfBestPos = MAX_SHORTINT;
+        int sizeOfBestPos = MAX_SHORT_INT;
 
         int curr = freeStart;
         do {

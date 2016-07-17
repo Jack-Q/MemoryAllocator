@@ -21,7 +21,7 @@
     <AnchorPane styleClass="commandLine" VBox.vgrow="NEVER">
         <HBox prefHeight="24.0" prefWidth="600.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
             <AnchorPane HBox.hgrow="ALWAYS">
-                <ComboBox fx:id="commandLine" editable="true" promptText="type command here ..." visibleRowCount="11"
+                <ComboBox fx:id="commandLine" editable="true" promptText="type command here ..." visibleRowCount="5"
                           AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
                     <items>
                         <FXCollections fx:factory="observableArrayList">

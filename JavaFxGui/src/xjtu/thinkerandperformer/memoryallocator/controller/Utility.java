@@ -9,15 +9,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
-/**
- * Created by jackq on 7/16/16.
- */
-public class Utility {
-    private static Text measureTextView = new Text();
-    private static Scene measureScene =
-            new Scene(new Group(measureTextView));
 
-    static Bounds measureFont(String text, Font font) {
+class Utility {
+    private static Text measureTextView = new Text();
+
+    // Keep a reference to this hidden scene in case it would be freed during GC
+    @SuppressWarnings("unused")
+    private static Scene measureScene = new Scene(new Group(measureTextView));
+
+    private static Bounds measureFont(String text, Font font) {
         measureTextView.setText(text);
         measureTextView.setFont(font);
         measureTextView.applyCss();

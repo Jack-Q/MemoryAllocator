@@ -1,105 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.Accordion?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ButtonBar?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-
-<?import java.lang.String?>
 <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
            AnchorPane.topAnchor="0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1">
-    <items>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-            <children>
-                <Accordion AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-                           AnchorPane.topAnchor="0">
-                    <panes>
-                        <TitledPane style="-fx-padding: 0" text="Allocation Blocks">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                          AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
-                                          fx:id="allocationBlockView">
-                                    <placeholder>
-                                        <Text>No Allocation Block</Text>
-                                    </placeholder>
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList"/>
-                                    </items>
-                                </ListView>
-                            </AnchorPane>
-                        </TitledPane>
-                        <TitledPane style="-fx-padding: 0" text="Variable List">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                          AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
-                                          fx:id="variableListView">
-                                    <placeholder>
-                                        <Text>No Variable Available</Text>
-                                    </placeholder>
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList"/>
-                                    </items>
-                                </ListView>
-                            </AnchorPane>
-                        </TitledPane>
-                        <TitledPane style="-fx-padding: 0" text="Action History">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                          AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
-                                          fx:id="actionHistoryView">
-                                    <placeholder>
-                                        <Text>No Action History</Text>
-                                    </placeholder>
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList"/>
-                                    </items>
-                                </ListView>
-                            </AnchorPane>
-                        </TitledPane>
-                        <TitledPane style="-fx-padding: 0" text="Console">
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                <ListView
-                                        style="/*-fx-background-color: #232323; -fx-text-fill: #aaa; -fx-font-family: nonaco, monospace;*/"
-                                        AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-                                        AnchorPane.topAnchor="0" fx:id="commandConsoleView">
-                                    <items>
-                                        <FXCollections fx:factory="observableArrayList"/>
-                                    </items>
-                                </ListView>
-                            </AnchorPane>
-                        </TitledPane>
-                    </panes>
-                </Accordion>
-            </children>
-        </AnchorPane>
-        <AnchorPane>
-            <VBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-                  AnchorPane.topAnchor="0">
-                <ButtonBar VBox.vgrow="NEVER">
-                    <buttons>
-                        <Slider fx:id="scaleFactorView" blockIncrement="1" min="0" max="100" showTickMarks="true"/>
-                        <Button text="Reset"/>
-                        <ToggleButton mnemonicParsing="false" text="toggle view mode" fx:id="viewModeToggle"/>
-                    </buttons>
-                </ButtonBar>
-                <AnchorPane VBox.vgrow="ALWAYS">
-                    <fx:include source="InspectorMemoryCanvas.fxml" AnchorPane.bottomAnchor="0"
-                                visible="${viewModeToggle.selected}" fx:id="inspectorMemoryCanvas"
-                                AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <Accordion AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                   AnchorPane.topAnchor="0">
+            <panes>
+                <TitledPane style="-fx-padding: 0" text="Allocation Blocks">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
+                                  fx:id="allocationBlockView">
+                            <placeholder>
+                                <Text>No Allocation Block</Text>
+                            </placeholder>
+                            <items>
+                                <FXCollections fx:factory="observableArrayList"/>
+                            </items>
+                        </ListView>
+                    </AnchorPane>
+                </TitledPane>
+                <TitledPane style="-fx-padding: 0" text="Variable List">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
+                                  fx:id="variableListView">
+                            <placeholder>
+                                <Text>No Variable Available</Text>
+                            </placeholder>
+                            <items>
+                                <FXCollections fx:factory="observableArrayList"/>
+                            </items>
+                        </ListView>
+                    </AnchorPane>
+                </TitledPane>
+                <TitledPane style="-fx-padding: 0" text="Action History">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
+                                  fx:id="actionHistoryView">
+                            <placeholder>
+                                <Text>No Action History</Text>
+                            </placeholder>
+                            <items>
+                                <FXCollections fx:factory="observableArrayList"/>
+                            </items>
+                        </ListView>
+                    </AnchorPane>
+                </TitledPane>
+                <TitledPane style="-fx-padding: 0" text="Console">
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <ListView
+                                style="/*-fx-background-color: #232323; -fx-text-fill: #aaa; -fx-font-family: Monaco, monospace;*/"
+                                AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                                AnchorPane.topAnchor="0" fx:id="commandConsoleView">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList"/>
+                            </items>
+                        </ListView>
+                    </AnchorPane>
+                </TitledPane>
+            </panes>
+        </Accordion>
+    </AnchorPane>
+    <AnchorPane>
+        <VBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+              AnchorPane.topAnchor="0">
+            <ButtonBar VBox.vgrow="NEVER">
+                <buttons>
+                    <Slider fx:id="scaleFactorView" blockIncrement="1" showTickMarks="true"/>
+                    <Button text="Reset"/>
+                    <ToggleButton mnemonicParsing="false" text="toggle view mode" fx:id="viewModeToggle"/>
+                </buttons>
+            </ButtonBar>
+            <AnchorPane VBox.vgrow="ALWAYS">
+                <fx:include source="InspectorMemoryCanvas.fxml" AnchorPane.bottomAnchor="0"
+                            visible="${viewModeToggle.selected}" fx:id="inspectorMemoryCanvas"
+                            AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
 
-                    <fx:include source="ScaleMemoryCanvas.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                visible="${! viewModeToggle.selected}" fx:id="scaleMemoryCanvas"
-                                AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
-                </AnchorPane>
-            </VBox>
-        </AnchorPane>
-    </items>
+                <fx:include source="ScaleMemoryCanvas.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                            visible="${! viewModeToggle.selected}" fx:id="scaleMemoryCanvas"
+                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
+            </AnchorPane>
+        </VBox>
+    </AnchorPane>
 </SplitPane>
