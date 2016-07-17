@@ -12,7 +12,7 @@ public class AllocatorSequentialFirstImpl extends AllocatorSequential {
 
     public static class SequentialFirstFitMethod implements AllocatorSequential.SequentialFitMethod {
         public int pickFreeBlock(int size, short[] memPool, MemHandle freelist) {
-            System.out.println("(测试信息)首先适配");
+            System.out.println("(顺序适配方法——首先适配)");
 
             if (freelist == null) return -1;  //无空闲块
             int freeStart = freelist.getPos();
