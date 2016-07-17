@@ -52,19 +52,13 @@
                          </TextFlow>
                      </placeholder>-->
                     <contextMenu>
-                        <ContextMenu>
+                        <ContextMenu fx:id="commandLineContextMenu">
                             <items>
                                 <MenuItem text="init"/>
                                 <MenuItem text="new"/>
-                                <Menu mnemonicParsing="false" text="delete">
-                                    <MenuItem disable="true" mnemonicParsing="false" text="no variable now"/>
-                                </Menu>
-                                <Menu mnemonicParsing="false" text="read">
-                                    <MenuItem disable="true" mnemonicParsing="false" text="no variable now"/>
-                                </Menu>
-                                <Menu mnemonicParsing="false" text="write">
-                                    <MenuItem disable="true" mnemonicParsing="false" text="no variable now"/>
-                                </Menu>
+                                <Menu mnemonicParsing="false" text="delete"/>
+                                <Menu mnemonicParsing="false" text="read"/>
+                                <Menu mnemonicParsing="false" text="write"/>
                             </items>
                         </ContextMenu>
                     </contextMenu>

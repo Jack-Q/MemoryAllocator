@@ -1,6 +1,9 @@
 package xjtu.thinkerandperformer.memoryallocator.controller;
 
 
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,15 +15,18 @@ import javafx.scene.text.TextFlow;
 import javafx.util.StringConverter;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.concurrent.SynchronousQueue;
+import java.util.stream.Collectors;
+
+import static org.omg.IOP.TAG_ORB_TYPE.value;
 
 public class FrameController implements Initializable {
     public AnchorPane sequentialMethodPanel;
     public AnchorPane buddyMethodPanel;
     public Button executeButton;
     public TabPane methodTabs;
+    public ContextMenu commandLineContextMenu;
     private MainController sequentialMethodPanelController;
     private MainController buddyMethodPanelController;
 
@@ -43,27 +49,43 @@ public class FrameController implements Initializable {
         private final String value;
         private final String explanation;
 
-        public SuggestionCellModel(String value) {
+        SuggestionCellModel(String value) {
             this(value, "");
         }
 
 
-        public SuggestionCellModel(String value, String explanation) {
+        SuggestionCellModel(String value, String explanation) {
             this.value = value;
             this.explanation = explanation;
         }
 
-        public String getValue() {
+        String getValue() {
             return value;
         }
 
-        public String getExplanation() {
+        String getExplanation() {
             return explanation;
         }
 
         @Override
         public String toString() {
             return value;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            SuggestionCellModel that = (SuggestionCellModel) o;
+
+            return value.equals(that.value);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return value.hashCode();
         }
     }
 
@@ -86,7 +108,7 @@ public class FrameController implements Initializable {
         } catch (Exception ignore) {
         }
 
-
+        // Initialize command line candidates filler
         commandLine.setCellFactory(m -> new ListCell<SuggestionCellModel>() {
             private final TextFlow textFlow;
             private final Text value;
@@ -146,9 +168,36 @@ public class FrameController implements Initializable {
         executeButton.setOnAction(e -> {
             currentController().handleCommand(commandLine.getValue() == null ? commandLine.getEditor().getText() : commandLine.getValue().getValue());
             commandLine.setValue(new SuggestionCellModel(""));
-
         });
+        commandLine.getEditor().setContextMenu(commandLine.getContextMenu());
+        commandLineContextMenu.setOnShowing(e -> commandLineContextMenu.getItems().stream()
+                .filter(m -> m instanceof Menu)
+                .forEach(m -> {
+                            ObservableList<MenuItem> items = ((Menu) m).getItems();
+                            items.clear();
+                            items.addAll(
+                                    currentController().getVariableList().stream()
+                                            .map(MenuItem::new)
+                                            .collect(Collectors.toList())
+                            );
+                            if (items.size() == 0) {
+                                final MenuItem defaultItem = new MenuItem("no variable now");
+                                defaultItem.setDisable(true);
+                                items.add(defaultItem);
+                            }
+                        }
+                )
+        );
+        final EventHandler<ActionEvent> menuEventHandler = a -> {
+            MenuItem targetMenuItem = (MenuItem) a.getTarget();
+            String parentNodeText = targetMenuItem.getParentMenu() != null ? targetMenuItem.getParentMenu().getText() : "";
+            String currentNodeText = targetMenuItem.getText();
 
+            String command = (parentNodeText != null ? parentNodeText + " " : "") + currentNodeText + " ";
+            commandLine.getEditor().setText(command);
+            commandLine.getEditor().positionCaret(command.length());
+        };
+        commandLineContextMenu.getItems().forEach(m -> m.setOnAction(menuEventHandler));
     }
 
     private void showPopup() {
@@ -159,6 +208,7 @@ public class FrameController implements Initializable {
         commandLine.getEditor().setText(original);
         commandLine.getEditor().positionCaret(caretPosition);
         commandLine.getItems().addAll(populateSuggestions(original));
+        commandLine.applyCss();
         commandLine.show();
     }
 
@@ -173,15 +223,41 @@ public class FrameController implements Initializable {
         defaultSuggestion.add(new SuggestionCellModel("delete", "delete a defined variable and free its memory space"));
     }
 
-    private List<SuggestionCellModel> populateSuggestions(String input) {
-        List<String> currentVariableList = currentController().getVariableList();
-        List<SuggestionCellModel> suggestions = new ArrayList<>();
+    private String[] allTokens = {"init", "new", "read", "write", "delete"};
+    private String[] collectiveTokens = {"read", "write", "delete"};
 
+    private List<SuggestionCellModel> populateSuggestions(String inputRaw) {
+        final String input = inputRaw == null ? "" : inputRaw.toLowerCase().trim();
+        final List<String> currentVariableList = currentController().getVariableList();
+        final List<SuggestionCellModel> suggestions = new ArrayList<>();
+
+        if (input.length() > 0) {
+            currentVariableList.stream()
+                    .filter(v -> v.contains(input) || input.contains(v))
+                    .forEach(v -> Arrays.stream(collectiveTokens)
+                            .forEach(token -> suggestions.add(new SuggestionCellModel(token + " " + v)))
+                    );
+
+            for (String token : collectiveTokens) {
+                if (token.contains(input) || input.startsWith(token))
+                    currentVariableList.forEach(v -> suggestions.add(new SuggestionCellModel(token + " " + v)));
+            }
+
+            for (String token : collectiveTokens) {
+                if (token.contains(input) || input.startsWith(token))
+                    currentVariableList.forEach(v -> suggestions.add(new SuggestionCellModel(token + " " + v)));
+            }
+
+            for (String token : allTokens) {
+                if (token.contains(input) || input.startsWith(token))
+                    suggestions.add(new SuggestionCellModel(token));
+            }
+        }
 
         // Fill up the suggestion list
-        for (int i = 0; suggestions.size() < 5 && i < defaultSuggestion.size(); i++) {
-            suggestions.add(defaultSuggestion.get(i));
-        }
-        return suggestions;
+        suggestions.addAll(defaultSuggestion);
+
+        return suggestions.stream().distinct().limit(5).collect(Collectors.toList());
+
     }
 }
