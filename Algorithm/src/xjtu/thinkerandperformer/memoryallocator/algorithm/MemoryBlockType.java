@@ -2,7 +2,9 @@ package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
 
 public enum MemoryBlockType {
-    MetaBlock,
+    MetaSizeBlock,
+    MetaLinkBlock,
+    MetaTagBlock,
     DataBlock,
     FullSizeBlock,
     UsedSizeBlock,

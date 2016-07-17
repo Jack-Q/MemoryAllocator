@@ -1,5 +1,7 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
+import com.sun.tools.internal.xjc.reader.dtd.bindinfo.BIAttribute;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -80,6 +82,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
             setFreeList(currentK - 1, firstBlock);
         }
         addr = getFreeList(k);
+        if(addr == MAGIC_POSITION_NONE) return null;
         setBlockState(addr, false);
 
         int blockNextFree = getBlockNextFree(addr);
@@ -87,7 +90,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
 
         setFreeList(k, blockNextFree);
         setBlockPrevFree(blockNextFree, MAGIC_POSITION_NONE);
-        return addr == MAGIC_POSITION_NONE ? null : new Variable(new MemHandle(addr + BLOCK_CONTENT_OFFSET));
+        return new Variable(new MemHandle(addr + BLOCK_CONTENT_OFFSET));
     }
 
     @Override
@@ -296,7 +299,65 @@ public class AllocatorBuddyImpl implements AllocatorADT {
     }
 
     public List<BitBlockInfo> getBitBlockInformationList() {
-        return null;
+        if (memoryPool == null || memoryPool.length == 0)
+            return new ArrayList<>();
+
+        List<BitBlockInfo> bitBlockInfoList = new ArrayList<>(this.memoryPool.length);
+        int i = 0;
+
+        // Meta Part
+        bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.MetaSizeBlock, memoryPool[i]));
+        i++;
+
+        for (; i < MEMORY_START_OFFSET; i++)
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.MetaLinkBlock, memoryPool[i]));
+
+        // Block Part
+        for (; i < memoryPool.length; i++) {
+            int startPos = i;
+            boolean isFree = isFree(startPos);
+            // + 0
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.StartTagBlock, isFree(startPos) ? 1 : 0));
+            i++;
+
+            // + 1
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.FullSizeBlock, memoryPool[i]));
+            i++;
+
+            // + 2
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.PointerBlock, isFree ? memoryPool[i] : -1));
+            i++;
+
+            // + 3
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.PointerBlock, isFree ? memoryPool[i] : -1));
+            i++;
+
+            // + 4
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.PointerBlock, isFree ? memoryPool[i] : -1));
+            i++;
+
+
+            // + 5
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.MetaTagBlock, memoryPool[i]));
+            i++;
+
+            for (boolean stringEnd = isFree; i < startPos + pow2(getBlockSize(startPos)) - 1; i++)
+                if (!stringEnd)
+                    if (memoryPool[i] == MAGIC_STRING_END) {
+                        bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memoryPool[i]));
+                        stringEnd = true;
+                    } else
+                        bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.DataBlock, memoryPool[i]));
+
+                else
+                    bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.UnusedDataBlock, 0));
+
+            // - 1
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memoryPool[i]));
+        }
+
+
+        return bitBlockInfoList;
     }
 
 
