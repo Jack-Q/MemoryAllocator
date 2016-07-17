@@ -8,9 +8,10 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotA
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public abstract class AllocatorSequential implements AllocatorADT {
 
+public class AllocatorSequential implements AllocatorADT {
     protected static final int START_TAG = 0;   // Start tag offset 偏移
     protected static final int FULL_SIZE = 1;   // Size field offset
     protected static final int USER_SIZE = 2;   // User size offset
@@ -30,11 +31,20 @@ public abstract class AllocatorSequential implements AllocatorADT {
     protected static final int MIN_SHORT_INT = -32768;
     protected static final int MAX_MEM_POOL_SIZE = 32767;
 
+    public interface SequentialFitMethod {
+        int pickFreeBlock(int size, short[] memPool, MemHandle freelist);
+    }
+
+    public void setSequentialFitMethod(SequentialFitMethod sequentialFitMethod) {
+        this.sequentialFitMethod = sequentialFitMethod;
+    }
+
+    SequentialFitMethod sequentialFitMethod = null;
     short[] memPool;             // 存储池
     MemHandle freelist;         // 指向可利用空间表
 
     /*构造方法*/
-    AllocatorSequential(int size) throws NumberOutOfBoundsException {
+    public AllocatorSequential(int size) throws NumberOutOfBoundsException {
         if (size > MAX_MEM_POOL_SIZE) throw new NumberOutOfBoundsException();
         init(size >= 6 ? size : 6);
     }
@@ -96,7 +106,9 @@ public abstract class AllocatorSequential implements AllocatorADT {
     }
 
     /*查找空闲块*/
-    abstract protected int pickFreeBlock(int size);
+    protected int pickFreeBlock(int size) {
+        return sequentialFitMethod.pickFreeBlock(size, memPool, freelist);
+    }
 
     /*向变量存储空间写入数据*/
     @Override
@@ -365,7 +377,6 @@ public abstract class AllocatorSequential implements AllocatorADT {
             i++;
 
 
-
             if (isFree) {
                 // for free block only
 
@@ -404,5 +415,10 @@ public abstract class AllocatorSequential implements AllocatorADT {
         }
 
         return bitBlockInfoList;
+    }
+
+
+    public int getBlockCount() {
+        return this.memPool.length;
     }
 }

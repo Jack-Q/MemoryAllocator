@@ -2,12 +2,9 @@ package xjtu.thinkerandperformer.memoryallocator.controller;
 
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.util.Callback;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.ICommand;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
@@ -43,6 +40,14 @@ abstract class MainController implements Initializable {
     private Label scaleMemoryCanvas;
     @FXML
     private ScaleMemoryCanvasController scaleMemoryCanvasController;
+
+    @FXML
+    private ChoiceBox<String> sequentialMethodSelection;
+
+    public ChoiceBox<String> getSequentialMethodSelection() {
+        return sequentialMethodSelection;
+    }
+
 
     abstract VisualMemManager getMemoryManager();
 

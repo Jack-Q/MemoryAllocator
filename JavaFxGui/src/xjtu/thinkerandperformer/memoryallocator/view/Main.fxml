@@ -77,12 +77,20 @@
     </AnchorPane>
     <AnchorPane>
         <VBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
-            <ButtonBar VBox.vgrow="NEVER">
+            <ButtonBar VBox.vgrow="NEVER" style="-fx-alignment: center-left">
                 <buttons>
-
+                    <ChoiceBox fx:id="sequentialMethodSelection">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="First"/>
+                                <String fx:value="Best"/>
+                                <String fx:value="Worst"/>
+                            </FXCollections>
+                        </items>
+                    </ChoiceBox>
                     <Slider fx:id="scaleFactorView" blockIncrement="1" showTickMarks="true"/>
-
                     <ToggleButton fx:id="viewModeToggle" mnemonicParsing="false" text="toggle view mode"/>
+
                 </buttons>
             </ButtonBar>
             <AnchorPane VBox.vgrow="ALWAYS">

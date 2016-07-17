@@ -23,6 +23,8 @@ public class MainControllerBuddyImpl extends MainController {
         // Connect UI to visual memory manager
         visualBuddyMemManager.setReadValueListener(s -> addConsoleItem(s, ConsoleCellType.DataOutput));
 
+        // hide menu item
+        getSequentialMethodSelection().setVisible(false);
 
     }
 
