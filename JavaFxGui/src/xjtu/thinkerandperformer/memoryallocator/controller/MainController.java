@@ -44,146 +44,22 @@ abstract class MainController implements Initializable {
     @FXML
     private ChoiceBox<String> sequentialMethodSelection;
 
+    private static void showMessageBox(String message, String description, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(message);
+        alert.setContentText(description);
+        alert.setHeaderText(message);
+        alert.show();
+    }
+
     public ChoiceBox<String> getSequentialMethodSelection() {
         return sequentialMethodSelection;
     }
-
 
     abstract VisualMemManager getMemoryManager();
 
     List<String> getVariableList() {
         return getMemoryManager().getVariableList();
-    }
-
-
-    enum ConsoleCellType {
-        Input, MessageOutput, ErrorOutput, DataOutput
-    }
-
-    private static class CommandConsoleCell {
-        private final String content;
-        private final ConsoleCellType consoleCellType;
-
-        public CommandConsoleCell(String content, ConsoleCellType type) {
-            this.content = content;
-            this.consoleCellType = type;
-        }
-
-        @Override
-        public String toString() {
-            return content;
-        }
-    }
-
-    private static class ActionHistoryCell {
-        private final Date date = new Date();
-        private final String actionName;
-        private final String actionArgs;
-
-        ActionHistoryCell(String actionName, String actionArgs) {
-            this.actionName = actionName;
-            this.actionArgs = actionArgs;
-        }
-
-        @Override
-        public String toString() {
-            return String.format(" %s %s  %tr", actionName, actionArgs, date);
-        }
-
-        public Date getDate() {
-            return date;
-        }
-
-        public String getActionName() {
-            return actionName;
-        }
-
-        public String getActionArgs() {
-            return actionArgs;
-        }
-    }
-
-    private static class VariableListCell {
-        private final String variableName;
-        private final int size;
-        private final int position;
-
-        public VariableListCell(String variableName, int size, int position) {
-            this.variableName = variableName;
-            this.size = size;
-            this.position = position;
-        }
-
-        public String getVariableName() {
-            return variableName;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public int getPosition() {
-            return position;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%8s %4d %4d", variableName, size, position);
-        }
-    }
-
-    private enum BlockStatus {
-        Busy, Free
-    }
-
-    private static class AllocationBlockListCell {
-        private final int startPos;
-        private final int size;
-        private final int prevPosition;
-        private final int nextPosition;
-        private final BlockStatus status;
-        /**
-         * Some extra information of a block such as the name of the variable of a node
-         */
-        private final String extraInfo;
-
-        public AllocationBlockListCell(int startPos, int size, int prevPosition, int nextPosition, BlockStatus status, String extraInfo) {
-            this.startPos = startPos;
-            this.size = size;
-            this.prevPosition = prevPosition;
-            this.nextPosition = nextPosition;
-            this.status = status;
-            this.extraInfo = extraInfo;
-        }
-
-        public int getStartPos() {
-            return startPos;
-        }
-
-        public int getSize() {
-            return size;
-        }
-
-        public int getPrevPosition() {
-            return prevPosition;
-        }
-
-        public int getNextPosition() {
-            return nextPosition;
-        }
-
-        public BlockStatus getStatus() {
-            return status;
-        }
-
-        public String getExtraInfo() {
-            return extraInfo;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%4d %4d %4d %4d %4s %8s", startPos, size, prevPosition, nextPosition, status.toString(), extraInfo);
-        }
     }
 
     @Override
@@ -296,14 +172,6 @@ abstract class MainController implements Initializable {
         variableListView.getItems().addAll(variableListCells);
     }
 
-    private static void showMessageBox(String message, String description, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(message);
-        alert.setContentText(description);
-        alert.setHeaderText(message);
-        alert.show();
-    }
-
     private void updateCanvas() {
         inspectorMemoryCanvasController.setBitBlockInformationList(getMemoryManager().getBitBlockInformationList());
         inspectorMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
@@ -311,5 +179,135 @@ abstract class MainController implements Initializable {
 
         scaleMemoryCanvasController.setBitBlockInformationList(getMemoryManager().getBitBlockInformationList());
         scaleMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
+    }
+
+    enum ConsoleCellType {
+        Input, MessageOutput, ErrorOutput, DataOutput
+    }
+
+    private enum BlockStatus {
+        Busy, Free
+    }
+
+    private static class CommandConsoleCell {
+        private final String content;
+        private final ConsoleCellType consoleCellType;
+
+        public CommandConsoleCell(String content, ConsoleCellType type) {
+            this.content = content;
+            this.consoleCellType = type;
+        }
+
+        @Override
+        public String toString() {
+            return content;
+        }
+    }
+
+    private static class ActionHistoryCell {
+        private final Date date = new Date();
+        private final String actionName;
+        private final String actionArgs;
+
+        ActionHistoryCell(String actionName, String actionArgs) {
+            this.actionName = actionName;
+            this.actionArgs = actionArgs;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(" %s %s  %tr", actionName, actionArgs, date);
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public String getActionName() {
+            return actionName;
+        }
+
+        public String getActionArgs() {
+            return actionArgs;
+        }
+    }
+
+    private static class VariableListCell {
+        private final String variableName;
+        private final int size;
+        private final int position;
+
+        public VariableListCell(String variableName, int position, int size) {
+            this.variableName = variableName;
+            this.position = position;
+            this.size = size;
+        }
+
+        public String getVariableName() {
+            return variableName;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%8s %4d %4d", variableName, size, position);
+        }
+    }
+
+    private static class AllocationBlockListCell {
+        private final int startPos;
+        private final int size;
+        private final int prevPosition;
+        private final int nextPosition;
+        private final BlockStatus status;
+        /**
+         * Some extra information of a block such as the name of the variable of a node
+         */
+        private final String extraInfo;
+
+        public AllocationBlockListCell(int startPos, int size, int prevPosition, int nextPosition, BlockStatus status, String extraInfo) {
+            this.startPos = startPos;
+            this.size = size;
+            this.prevPosition = prevPosition;
+            this.nextPosition = nextPosition;
+            this.status = status;
+            this.extraInfo = extraInfo;
+        }
+
+        public int getStartPos() {
+            return startPos;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public int getPrevPosition() {
+            return prevPosition;
+        }
+
+        public int getNextPosition() {
+            return nextPosition;
+        }
+
+        public BlockStatus getStatus() {
+            return status;
+        }
+
+        public String getExtraInfo() {
+            return extraInfo;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%4d %4d %4d %4d %4s %8s", startPos, size, prevPosition, nextPosition, status.toString(), extraInfo);
+        }
     }
 }
