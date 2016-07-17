@@ -1,6 +1,5 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
-import com.sun.tools.internal.xjc.reader.dtd.bindinfo.BIAttribute;
 
 import java.util.ArrayList;
 import java.util.Arrays;

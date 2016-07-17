@@ -365,38 +365,43 @@ public abstract class AllocatorSequential implements AllocatorADT {
             bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.FullSizeBlock, memPool[i]));
             i++;
 
-            // offset + 2
-            bitBlockInfoList.add(i, new BitBlockInfo(isFree ? MemoryBlockType.PointerBlock : MemoryBlockType.UsedSizeBlock, memPool[i]));
-            i++;
+
 
             if (isFree) {
                 // for free block only
+
+                // offset + 2
+                bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.PointerBlock, memPool[i]));
+                i++;
+
                 // offset + 3
                 bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.PointerBlock, memPool[i]));
                 i++;
 
-                for (; i < endPos - 2; i++)
+                for (; i < endPos - 1; i++)
                     bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.FreeBlock, memPool[i]));
 
                 // last pos - 1
                 bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.FullSizeBlock, memPool[i]));
                 i++;
 
-                // last pos - 0
-                bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memPool[i]));
-                i++;
             } else {
                 // for reserved block only
-                for (; i < endPos - 1; i++)
+
+                // offset + 2
+                bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.UsedSizeBlock, memPool[i]));
+                i++;
+
+                for (; i < endPos; i++)
                     if (i < dataBlock)
                         bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.DataBlock, memPool[i]));
                     else
                         bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.UnusedDataBlock, memPool[i]));
 
-                // last pos
-                bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memPool[i]));
-                i++;
             }
+            // last pos - 0
+            bitBlockInfoList.add(i, new BitBlockInfo(MemoryBlockType.EndTagBlock, memPool[i]));
+            // i++; // duplicated with for structure
         }
 
         return bitBlockInfoList;
