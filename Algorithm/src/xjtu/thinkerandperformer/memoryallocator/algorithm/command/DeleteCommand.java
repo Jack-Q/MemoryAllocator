@@ -5,7 +5,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.MemoryPoolUn
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotFoundException;
 
 public  class DeleteCommand implements ICommand {
-    String varName;
+    final String varName;
 
     public DeleteCommand(String varName) {
         this.varName = varName;

@@ -16,7 +16,7 @@ public interface AllocatorADT {
     Variable newVariable(String variableName, int size) throws InsufficientMemoryPoolException;
 
     /*向变量存储空间写入数据*/
-    boolean write(Variable variable, String value) throws InsufficientVariableSizeException;
+    void write(Variable variable, String value) throws InsufficientVariableSizeException;
 
     /*从变量存储空间读数据*/
     String read(Variable variable) throws VariableNotAssignedException;

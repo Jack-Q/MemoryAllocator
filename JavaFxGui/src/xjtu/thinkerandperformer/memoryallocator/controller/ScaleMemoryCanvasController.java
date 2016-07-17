@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
@@ -45,7 +44,6 @@ public class ScaleMemoryCanvasController implements Initializable {
     private double centerX = 0;
     private double centerY = 0;
 
-    private boolean isMouseDown = false;
     private boolean isDrag = false;
     private double mousePositionX = 0.0d;
     private double mousePositionY = 0.0d;
@@ -100,20 +98,16 @@ public class ScaleMemoryCanvasController implements Initializable {
     }
 
 
-    private boolean zoomIn(double zoomCenterX, double zoomCenterY) {
+    private void zoomIn(double zoomCenterX, double zoomCenterY) {
         if (zoomFactor < maxZoomFactor / originalZoomFactor) {
             zoom(zoomCenterX, zoomCenterY, Math.min(maxZoomFactor / originalZoomFactor, zoomFactor * 2));
-            return true;
         }
-        return false;
     }
 
-    private boolean zoomOut(double zoomCenterX, double zoomCenterY) {
+    private void zoomOut(double zoomCenterX, double zoomCenterY) {
         if (zoomFactor > minZoomFactor) {
             zoom(zoomCenterX, zoomCenterY, Math.max(minZoomFactor, zoomFactor * 0.5));
-            return true;
         }
-        return false;
     }
 
 
@@ -230,24 +224,24 @@ public class ScaleMemoryCanvasController implements Initializable {
     /**
      * @param percent must be a double number between 0 and 1
      */
-    public void setScaleFactor(double percent) {
+    void setScaleFactor(double percent) {
         percent = Math.min(percent, 1.0d);
         percent = Math.max(percent, 0.0d);
         this.zoomFactor = minZoomFactor + (maxZoomFactor / originalZoomFactor - minZoomFactor) * percent;
         repaint();
     }
 
-    public void setScaleChangeListener(Consumer<Double> c) {
+    void setScaleChangeListener(Consumer<Double> c) {
         this.scaleChangeListener = c;
     }
 
 
-    public void setBlockCount(int blockCount) {
+    void setBlockCount(int blockCount) {
         this.blockCount = blockCount;
         repaint();
     }
 
-    public void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
+    void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
         this.blockInformationList = blockInformationList;
         repaint();
     }

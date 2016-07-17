@@ -7,8 +7,8 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotF
 
 
 public class WriteCommand implements ICommand {
-    String varName;
-    String value;
+    final String varName;
+    final String value;
 
     public WriteCommand(String varName, String value) {
         this.value = value;

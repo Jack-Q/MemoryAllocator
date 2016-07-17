@@ -11,7 +11,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
 
 class Utility {
-    private static Text measureTextView = new Text();
+    private static final Text measureTextView = new Text();
 
     // Keep a reference to this hidden scene in case it would be freed during GC
     @SuppressWarnings("unused")

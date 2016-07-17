@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
 
 public class MainControllerSequentialImpl extends MainController {
 
-    private VisualSequentialMemManager visualSequentialMemManager = new VisualSequentialMemManager();
+    private final VisualSequentialMemManager visualSequentialMemManager = new VisualSequentialMemManager();
 
     @Override
     VisualMemManager getMemoryManager() {

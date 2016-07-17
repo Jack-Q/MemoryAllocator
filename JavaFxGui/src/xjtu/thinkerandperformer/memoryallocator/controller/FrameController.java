@@ -16,10 +16,7 @@ import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.SynchronousQueue;
 import java.util.stream.Collectors;
-
-import static org.omg.IOP.TAG_ORB_TYPE.value;
 
 public class FrameController implements Initializable {
     public AnchorPane sequentialMethodPanel;
@@ -213,7 +210,7 @@ public class FrameController implements Initializable {
     }
 
 
-    private List<SuggestionCellModel> defaultSuggestion = new ArrayList<>();
+    private final List<SuggestionCellModel> defaultSuggestion = new ArrayList<>();
 
     {
         defaultSuggestion.add(new SuggestionCellModel("init", "initialize memory allocator with specified size"));
@@ -223,8 +220,8 @@ public class FrameController implements Initializable {
         defaultSuggestion.add(new SuggestionCellModel("delete", "delete a defined variable and free its memory space"));
     }
 
-    private String[] allTokens = {"init", "new", "read", "write", "delete"};
-    private String[] collectiveTokens = {"read", "write", "delete"};
+    private final String[] allTokens = {"init", "new", "read", "write", "delete"};
+    private final String[] collectiveTokens = {"read", "write", "delete"};
 
     private List<SuggestionCellModel> populateSuggestions(String inputRaw) {
         final String input = inputRaw == null ? "" : inputRaw.toLowerCase().trim();

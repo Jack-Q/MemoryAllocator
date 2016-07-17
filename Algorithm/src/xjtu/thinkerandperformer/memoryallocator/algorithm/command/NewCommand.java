@@ -7,8 +7,8 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.MemoryPoolUn
 
 
 class NewCommand implements ICommand {
-    private String varName;
-    private int varSize;
+    private final String varName;
+    private final int varSize;
 
     NewCommand(String varName, int varSize) {
         this.varName = varName;

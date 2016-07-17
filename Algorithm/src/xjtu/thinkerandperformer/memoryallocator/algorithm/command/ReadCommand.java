@@ -7,7 +7,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotF
 
 
 class ReadCommand implements ICommand {
-    private String varName;
+    private final String varName;
 
     ReadCommand(String varName) {
         this.varName = varName;

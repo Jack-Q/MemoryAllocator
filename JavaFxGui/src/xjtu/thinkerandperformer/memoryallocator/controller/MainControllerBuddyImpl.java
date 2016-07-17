@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 public class MainControllerBuddyImpl extends MainController {
 
-    private VisualBuddyMemManager visualBuddyMemManager = new VisualBuddyMemManager();
+    private final VisualBuddyMemManager visualBuddyMemManager = new VisualBuddyMemManager();
 
     @Override
     VisualMemManager getMemoryManager() {

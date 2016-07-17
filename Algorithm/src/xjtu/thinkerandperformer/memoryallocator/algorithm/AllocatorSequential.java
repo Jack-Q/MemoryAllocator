@@ -8,7 +8,6 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.VariableNotA
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 public class AllocatorSequential implements AllocatorADT {
@@ -112,7 +111,7 @@ public class AllocatorSequential implements AllocatorADT {
 
     /*向变量存储空间写入数据*/
     @Override
-    public boolean write(Variable variable, String value) throws InsufficientVariableSizeException {
+    public void write(Variable variable, String value) throws InsufficientVariableSizeException {
         int startPos = variable.getHandle().getPos();//该变量在存储池中的起点位置
         if (memPool[startPos + FULL_SIZE] < value.length()) throw new InsufficientVariableSizeException();
 
@@ -120,7 +119,7 @@ public class AllocatorSequential implements AllocatorADT {
             memPool[startPos + USER_SIZE] = (short) value.length();
             for (int i = 0; i < value.length(); i++)
                 memPool[startPos + DATA_POS + i] = (short) value.charAt(i);
-            return true;
+            return;
         }
     }
 

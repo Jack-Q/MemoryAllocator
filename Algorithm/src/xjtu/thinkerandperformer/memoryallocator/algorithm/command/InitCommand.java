@@ -4,7 +4,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.MemManager;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
 
 public class InitCommand implements ICommand {
-    int memPoolSize;
+    final int memPoolSize;
 
     public InitCommand(int memPoolSize) {
         this.memPoolSize = memPoolSize;
