@@ -33,7 +33,6 @@ public class ScaleMemoryCanvasController implements Initializable {
 
     private static final double maxZoomFactor = 10.0d;
     private static final double minZoomFactor = 1.0d;
-    private static final double detailZoomFactor = 2;
     private double zoomFactor = 1.0d;
 
     @FXML
@@ -102,8 +101,8 @@ public class ScaleMemoryCanvasController implements Initializable {
 
 
     private boolean zoomIn(double zoomCenterX, double zoomCenterY) {
-        if (zoomFactor < maxZoomFactor) {
-            zoom(zoomCenterX, zoomCenterY, Math.min(maxZoomFactor, zoomFactor * 2));
+        if (zoomFactor < maxZoomFactor / originalZoomFactor) {
+            zoom(zoomCenterX, zoomCenterY, Math.min(maxZoomFactor / originalZoomFactor, zoomFactor * 2));
             return true;
         }
         return false;
@@ -155,7 +154,7 @@ public class ScaleMemoryCanvasController implements Initializable {
 
     private void notifyStateChange() {
         if (scaleChangeListener != null)
-            scaleChangeListener.accept((this.zoomFactor - minZoomFactor) / (maxZoomFactor - minZoomFactor));
+            scaleChangeListener.accept((this.zoomFactor - minZoomFactor) / (maxZoomFactor / originalZoomFactor - minZoomFactor));
     }
 
     private void repaint() {
@@ -174,8 +173,6 @@ public class ScaleMemoryCanvasController implements Initializable {
         }
 
         ctx.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        ctx.setFill(Color.web("#000", scale / maxZoomFactor));
-        ctx.fill();
 
         double actualBlockWidth = blockWidth * originalZoomFactor * scale;
         double actualBlockSpace = blockSpace * originalZoomFactor * scale;
@@ -236,7 +233,7 @@ public class ScaleMemoryCanvasController implements Initializable {
     public void setScaleFactor(double percent) {
         percent = Math.min(percent, 1.0d);
         percent = Math.max(percent, 0.0d);
-        this.zoomFactor = minZoomFactor + (maxZoomFactor - minZoomFactor) * percent;
+        this.zoomFactor = minZoomFactor + (maxZoomFactor / originalZoomFactor - minZoomFactor) * percent;
         repaint();
     }
 

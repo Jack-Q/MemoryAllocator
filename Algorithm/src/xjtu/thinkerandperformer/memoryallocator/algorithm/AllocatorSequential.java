@@ -39,9 +39,9 @@ public class AllocatorSequential implements AllocatorADT {
         this.sequentialFitMethod = sequentialFitMethod;
     }
 
-    SequentialFitMethod sequentialFitMethod = null;
-    short[] memPool;             // 存储池
-    MemHandle freelist;         // 指向可利用空间表
+    private SequentialFitMethod sequentialFitMethod = null;
+    private short[] memPool;             // 存储池
+    private MemHandle freelist;         // 指向可利用空间表
 
     /*构造方法*/
     public AllocatorSequential(int size) throws NumberOutOfBoundsException {
@@ -106,7 +106,7 @@ public class AllocatorSequential implements AllocatorADT {
     }
 
     /*查找空闲块*/
-    protected int pickFreeBlock(int size) {
+    private int pickFreeBlock(int size) {
         return sequentialFitMethod.pickFreeBlock(size, memPool, freelist);
     }
 

@@ -1,6 +1,10 @@
 package xjtu.thinkerandperformer.memoryallocator.algorithm;
 
 
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.InsufficientMemoryPoolException;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.InsufficientVariableSizeException;
+import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfBoundsException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -38,7 +42,8 @@ public class AllocatorBuddyImpl implements AllocatorADT {
     private int[] memoryPool;
 
     //endregion
-    public AllocatorBuddyImpl(int size) {
+    public AllocatorBuddyImpl(int size) throws NumberOutOfBoundsException {
+        if (size < MEMORY_START_OFFSET) throw new NumberOutOfBoundsException();
         init(size);
     }
 
@@ -59,7 +64,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
     }
 
     @Override
-    public Variable newVariable(String variableName, int size) {
+    public Variable newVariable(String variableName, int size) throws InsufficientMemoryPoolException {
         int address;
         int blockSize = size + BLOCK_EXTRA_SIZE;
         final int k = leastPowerOf2(blockSize);
@@ -69,7 +74,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
         for (currentK = k; currentK <= getMemoryK() && getFreeList(currentK) == MAGIC_POSITION_NONE; currentK++)
             ;
         // No suitable space left
-        if (currentK > getMemoryK()) return null;
+        if (currentK > getMemoryK()) throw new InsufficientMemoryPoolException();
         // find the
         for (; currentK > k; currentK--) {
             // remove this from top of list;
@@ -82,7 +87,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
             setFreeList(currentK - 1, firstBlock);
         }
         address = getFreeList(k);
-        if(address == MAGIC_POSITION_NONE) return null;
+        if (address == MAGIC_POSITION_NONE) throw new InsufficientMemoryPoolException();
         setBlockState(address, false);
 
         int blockNextFree = getBlockNextFree(address);
@@ -94,7 +99,7 @@ public class AllocatorBuddyImpl implements AllocatorADT {
     }
 
     @Override
-    public boolean write(Variable variable, String value) {
+    public boolean write(Variable variable, String value) throws InsufficientVariableSizeException {
 
         int contentPos = variable.getHandle().getPos();
         int startPos = getBlockStartPos(contentPos);
@@ -106,16 +111,19 @@ public class AllocatorBuddyImpl implements AllocatorADT {
             if (getBlockSize(startPos) - BLOCK_EXTRA_SIZE > value.length())
                 memoryPool[contentPos + value.length()] = MAGIC_STRING_END;
             return true;
+        } else {
+            throw new InsufficientVariableSizeException();
         }
-        return false;
     }
 
     @Override
     public String read(Variable variable) {
+
         int len = 0;
         while (memoryPool[variable.getHandle().getPos() + len] != MAGIC_STRING_END
                 && memoryPool[variable.getHandle().getPos() + len] != MAGIC_BLOCK_END)
             len++;
+
         return new String(memoryPool, variable.getHandle().getPos(), len);
     }
 
