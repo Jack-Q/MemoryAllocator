@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
+
+<?import java.lang.String?>
 <SplitPane dividerPositions="0.2" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
            AnchorPane.topAnchor="0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1">
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
@@ -12,52 +23,49 @@
             <panes>
                 <TitledPane style="-fx-padding: 0" text="Allocation Blocks">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
-                                  fx:id="allocationBlockView">
+                        <TableView fx:id="allocationBlockView" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                   AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
                             <placeholder>
                                 <Text>No Allocation Block</Text>
                             </placeholder>
                             <items>
                                 <FXCollections fx:factory="observableArrayList"/>
                             </items>
-                        </ListView>
+                        </TableView>
                     </AnchorPane>
                 </TitledPane>
                 <TitledPane style="-fx-padding: 0" text="Variable List">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
-                                  fx:id="variableListView">
+                        <TableView fx:id="variableListView" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                   AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
                             <placeholder>
                                 <Text>No Variable Available</Text>
                             </placeholder>
                             <items>
                                 <FXCollections fx:factory="observableArrayList"/>
                             </items>
-                        </ListView>
+                        </TableView>
                     </AnchorPane>
                 </TitledPane>
                 <TitledPane style="-fx-padding: 0" text="Action History">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <ListView AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                                  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"
-                                  fx:id="actionHistoryView">
+                        <TableView fx:id="actionHistoryView" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                                   AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
                             <placeholder>
                                 <Text>No Action History</Text>
                             </placeholder>
                             <items>
                                 <FXCollections fx:factory="observableArrayList"/>
                             </items>
-                        </ListView>
+                        </TableView>
                     </AnchorPane>
                 </TitledPane>
                 <TitledPane style="-fx-padding: 0" text="Console">
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                        <ListView
-                                style="/*-fx-background-color: #232323; -fx-text-fill: #aaa; -fx-font-family: Monaco, monospace;*/"
-                                AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-                                AnchorPane.topAnchor="0" fx:id="commandConsoleView">
+                        <ListView fx:id="commandConsoleView"
+                                  style="/*-fx-background-color: #232323; -fx-text-fill: #aaa; -fx-font-family: Monaco, monospace;*/"
+                                  AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
+                                  AnchorPane.topAnchor="0">
                             <items>
                                 <FXCollections fx:factory="observableArrayList"/>
                             </items>
@@ -68,22 +76,22 @@
         </Accordion>
     </AnchorPane>
     <AnchorPane>
-        <VBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-              AnchorPane.topAnchor="0">
+        <VBox AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
             <ButtonBar VBox.vgrow="NEVER">
                 <buttons>
+
                     <Slider fx:id="scaleFactorView" blockIncrement="1" showTickMarks="true"/>
-                    <Button text="Reset"/>
-                    <ToggleButton mnemonicParsing="false" text="toggle view mode" fx:id="viewModeToggle"/>
+
+                    <ToggleButton fx:id="viewModeToggle" mnemonicParsing="false" text="toggle view mode"/>
                 </buttons>
             </ButtonBar>
             <AnchorPane VBox.vgrow="ALWAYS">
-                <fx:include source="InspectorMemoryCanvas.fxml" AnchorPane.bottomAnchor="0"
-                            visible="${viewModeToggle.selected}" fx:id="inspectorMemoryCanvas"
-                            AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
+                <fx:include fx:id="inspectorMemoryCanvas" source="InspectorMemoryCanvas.fxml"
+                            visible="${viewModeToggle.selected}" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
+                            AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
 
-                <fx:include source="ScaleMemoryCanvas.fxml" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-                            visible="${! viewModeToggle.selected}" fx:id="scaleMemoryCanvas"
+                <fx:include fx:id="scaleMemoryCanvas" source="ScaleMemoryCanvas.fxml"
+                            visible="${! viewModeToggle.selected}" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
                             AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"/>
             </AnchorPane>
         </VBox>

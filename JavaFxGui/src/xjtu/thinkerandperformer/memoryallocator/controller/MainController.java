@@ -1,9 +1,13 @@
 package xjtu.thinkerandperformer.memoryallocator.controller;
 
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.ICommand;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
@@ -24,11 +28,11 @@ abstract class MainController implements Initializable {
     @FXML
     public ToggleButton viewModeToggle;
     @FXML
-    public ListView<AllocationBlockListCell> allocationBlockView;
+    public TableView<AllocationBlockListCell> allocationBlockView;
     @FXML
-    public ListView<VariableListCell> variableListView;
+    public TableView<VariableListCell> variableListView;
     @FXML
-    public ListView<ActionHistoryCell> actionHistoryView;
+    public TableView<ActionHistoryCell> actionHistoryView;
     @FXML
     public ListView<CommandConsoleCell> commandConsoleView;
     @FXML
@@ -79,6 +83,18 @@ abstract class MainController implements Initializable {
         @Override
         public String toString() {
             return String.format(" %s %s  %tr", actionName, actionArgs, date);
+        }
+
+        public Date getDate() {
+            return date;
+        }
+
+        public String getActionName() {
+            return actionName;
+        }
+
+        public String getActionArgs() {
+            return actionArgs;
         }
     }
 
@@ -174,7 +190,38 @@ abstract class MainController implements Initializable {
         });
         scaleMemoryCanvasController.setScaleChangeListener(s -> scaleFactorView.setValue(s * 100));
 
+        // Setup block table view control
+        TableColumn<AllocationBlockListCell, Integer> startPosColumn = new TableColumn<>("Start Position");
+        startPosColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getStartPos()));
+        TableColumn<AllocationBlockListCell, Integer> sizeColumn = new TableColumn<>("Size");
+        sizeColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getSize()));
+        TableColumn<AllocationBlockListCell, Integer> prevPosColumn = new TableColumn<>("Prev Position");
+        prevPosColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getPrevPosition()));
+        TableColumn<AllocationBlockListCell, Integer> nextPosColumn = new TableColumn<>("Next Position");
+        nextPosColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getNextPosition()));
+        TableColumn<AllocationBlockListCell, BlockStatus> statusColumn = new TableColumn<>("Status");
+        statusColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getStatus()));
+        TableColumn<AllocationBlockListCell, String> extraInfoColumn = new TableColumn<>("Extra Info");
+        extraInfoColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getExtraInfo()));
+        allocationBlockView.getColumns().addAll(startPosColumn, sizeColumn, prevPosColumn, nextPosColumn, statusColumn, extraInfoColumn);
 
+        // Setup variable table view control
+        TableColumn<VariableListCell, String> variableNameColumn = new TableColumn<>("Name");
+        variableNameColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getVariableName()));
+        TableColumn<VariableListCell, Integer> variableSizeColumn = new TableColumn<>("Size");
+        variableSizeColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getSize()));
+        TableColumn<VariableListCell, Integer> variablePositionColumn = new TableColumn<>("Position");
+        variablePositionColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getPosition()));
+        variableListView.getColumns().setAll(variableNameColumn, variableSizeColumn, variablePositionColumn);
+
+        // Setup action history view control
+        TableColumn<ActionHistoryCell, String> actionNameColumn = new TableColumn<>("Action");
+        actionNameColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getActionName()));
+        TableColumn<ActionHistoryCell, String> actionArgsColumn = new TableColumn<>("Arguments");
+        actionArgsColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getActionArgs()));
+        TableColumn<ActionHistoryCell, Date> actionTimeColumn = new TableColumn<>("Time");
+        actionTimeColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getDate()));
+        actionHistoryView.getColumns().addAll(actionNameColumn, actionArgsColumn, actionTimeColumn);
     }
 
     void addConsoleItem(String message, ConsoleCellType type) {
