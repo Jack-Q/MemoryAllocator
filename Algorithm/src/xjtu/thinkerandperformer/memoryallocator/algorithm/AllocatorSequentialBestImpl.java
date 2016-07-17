@@ -5,9 +5,14 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.exception.NumberOutOfB
 
 public class AllocatorSequentialBestImpl extends AllocatorSequential {
 
+    public AllocatorSequentialBestImpl(int size) throws NumberOutOfBoundsException {
+        super(size);
+        super.setSequentialFitMethod(new SequentialBestFitMethod());
+    }
+
     public static class SequentialBestFitMethod implements AllocatorSequential.SequentialFitMethod {
         public int pickFreeBlock(int size, short[] memPool, MemHandle freelist) {
-            System.out.println("(测试信息)最佳适配");
+            System.out.println("(顺序适配方法——最佳适配)");
             if (freelist == null) return -1;  //无空闲块
             int freeStart = freelist.getPos();
 
@@ -27,11 +32,6 @@ public class AllocatorSequentialBestImpl extends AllocatorSequential {
             if (memPool[bestPos + FULL_SIZE] >= (size + MIN_EXTRA)) return bestPos;
             else return -1;
         }
-    }
-
-    public AllocatorSequentialBestImpl(int size) throws NumberOutOfBoundsException {
-        super(size);
-        super.setSequentialFitMethod(new SequentialBestFitMethod());
     }
 
 

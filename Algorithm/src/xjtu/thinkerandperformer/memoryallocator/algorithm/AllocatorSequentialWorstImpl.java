@@ -12,7 +12,7 @@ public class AllocatorSequentialWorstImpl extends AllocatorSequential{
     public static class SequentialWorstFitMethod implements AllocatorSequential.SequentialFitMethod {
 
         public int pickFreeBlock(int size, short[] memPool, MemHandle freelist) {
-            System.out.println("(测试信息)最差适配");
+            System.out.println("(顺序适配方法——最差适配)");
 
             if (freelist == null) return -1;  //无空闲块
             int freeStart = freelist.getPos();
