@@ -260,6 +260,7 @@ public class ScaleMemoryCanvasController implements Initializable {
 
     public void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
         this.blockInformationList = blockInformationList;
+        repaint();
     }
     // endregion
 }

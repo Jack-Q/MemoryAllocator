@@ -98,9 +98,9 @@ public class InspectorMemoryCanvasController implements Initializable {
                 if (i * blockColumnCount + j < blockCount) {
                     double h = margin + i * blockSpace * originalZoomFactor;
                     double w = margin + j * blockSpace * originalZoomFactor;
-                    double opacity = 0.2 + 0.6 * (0.5 * w / width + 0.5 * h / height);
-                    ctx.setFill(Color.web("#09c", opacity));
-                    ctx.fillRect(w, h, blockWidth * originalZoomFactor, blockWidth * originalZoomFactor);
+                    int index = i * blockColumnCount + j;
+                    drawBitBlock(ctx, w, h, index, blockInformationList.get(index), blockWidth * originalZoomFactor);
+
                 }
 
 
@@ -157,25 +157,15 @@ public class InspectorMemoryCanvasController implements Initializable {
                     continue;
 
                 // let the inside block to be rendered later
-                if(Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                if (Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
                         + Math.pow(centerY - y - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
-                        < Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2))
+                        < Math.min(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3, /* for block larger than the radius of inspector */
+                        Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2)))
                     continue;
 
-                double opacity = 0.2 + 0.6 * (0.5 * (indexX * blockSpace * originalZoomFactor) / width + 0.5 * (indexY * blockSpace * originalZoomFactor) / height);
-                ctx.setFill(Color.web("#09c", opacity));
-                ctx.fillRect(
-                        x,
-                        y,
-                        blockWidth * scaleRatio * originalZoomFactor, blockWidth * scaleRatio * originalZoomFactor);
-                ctx.setFill(Color.web("#555", 0.8));
 
-                String id = Integer.toString(indexX + indexY * blockColumnCount);
-                ctx.fillText(
-                        id,
-                        centerX - scaleRatio * (centerX - (indexX * blockSpace + blockWidth * (0.5 - 0.09 * id.length())) * originalZoomFactor - margin),
-                        centerY - scaleRatio * (centerY - (indexY * blockSpace + blockWidth * 0.3) * originalZoomFactor - margin)
-                );
+                int index = indexX + indexY * blockColumnCount;
+                drawBitBlock(ctx, x, y, index, blockInformationList.get(index), blockWidth * scaleRatio * originalZoomFactor);
             }
         }
 
@@ -190,28 +180,15 @@ public class InspectorMemoryCanvasController implements Initializable {
                 double y = centerY - scaleRatio * (centerY - indexY * blockSpace * originalZoomFactor - margin);
 
                 // let the inside block to be rendered later
-                if(Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
+                if (Math.pow(centerX - x - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
                         + Math.pow(centerY - y - blockSpace * scaleRatio * originalZoomFactor / 2, 2)
-                        > Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2))
+                        > Math.min(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3, /* for block larger than the radius of inspector */
+                        Math.pow(averageRadius - blockSpace * scaleRatio * originalZoomFactor / 2 * 1.3/* error tolerance */, 2)))
                     continue;
-
-                double opacity = 0.2 + 0.6 * (0.5 * (indexX * blockSpace * originalZoomFactor) / width + 0.5 * (indexY * blockSpace * originalZoomFactor) / height);
-                ctx.setFill(Color.web("#09c", opacity));
-                ctx.fillRect(
-                        x,
-                        y,
-                        blockWidth * scaleRatio * originalZoomFactor, blockWidth * scaleRatio * originalZoomFactor);
-                ctx.setFill(Color.web("#555", 0.8));
-
-                String id = Integer.toString(indexX + indexY * blockColumnCount);
-                ctx.fillText(
-                        id,
-                        centerX - scaleRatio * (centerX - (indexX * blockSpace + blockWidth * (0.5 - 0.09 * id.length())) * originalZoomFactor - margin),
-                        centerY - scaleRatio * (centerY - (indexY * blockSpace + blockWidth * 0.3) * originalZoomFactor - margin)
-                );
+                int index = indexX + indexY * blockColumnCount;
+                drawBitBlock(ctx, x, y, index, blockInformationList.get(index), blockWidth * scaleRatio * originalZoomFactor);
             }
         }
-
 
 
         // Add translucent effect to magnifier
@@ -226,6 +203,31 @@ public class InspectorMemoryCanvasController implements Initializable {
 
         // Restore global context
         ctx.restore();
+    }
+
+    private void drawBitBlock(GraphicsContext ctx, double positionX, double positionY, int index, BitBlockInfo bitBlockInfo, double size) {
+        ctx.setFill(bitBlockInfo.getType().getColor());
+        ctx.fillRect(
+                positionX,
+                positionY,
+                size, size);
+
+        if (size < 30) return;
+
+        ctx.setFill(Color.web("#39c", 0.8));
+        String contentValue = String.valueOf(bitBlockInfo.getValue());
+        ctx.fillText(
+                contentValue,
+                positionX + size * (0.5 - 0.09 * contentValue.length()),
+                positionY + size / 2 - 3);
+
+        ctx.setFill(Color.web("#555", 0.4));
+        String indexString = String.valueOf(index);
+        ctx.fillText(
+                indexString,
+                positionX + size * (0.5 - 0.09 * indexString.length()),
+                positionY + size - 3);
+
     }
 
 
@@ -251,7 +253,7 @@ public class InspectorMemoryCanvasController implements Initializable {
     public void setScaleFactor(double percent) {
         percent = Math.min(percent, 1.0d);
         percent = Math.max(percent, 0.0d);
-        scaleRatio = minScaleRatio + (maxScaleRatio - minScaleRatio) * percent;
+        scaleRatio = minScaleRatio + (maxScaleRatio / originalZoomFactor- minScaleRatio) * percent;
     }
 
     public void setBlockCount(int blockCount) {
@@ -261,5 +263,6 @@ public class InspectorMemoryCanvasController implements Initializable {
 
     public void setBitBlockInformationList(List<BitBlockInfo> blockInformationList) {
         this.blockInformationList = blockInformationList;
+        updateScene();
     }
 }

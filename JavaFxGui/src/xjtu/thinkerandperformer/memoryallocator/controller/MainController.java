@@ -249,10 +249,11 @@ abstract class MainController implements Initializable {
     }
 
     private void updateCanvas() {
-        inspectorMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
         inspectorMemoryCanvasController.setBitBlockInformationList(getMemoryManager().getBitBlockInformationList());
+        inspectorMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
 
-        scaleMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
+
         scaleMemoryCanvasController.setBitBlockInformationList(getMemoryManager().getBitBlockInformationList());
+        scaleMemoryCanvasController.setBlockCount(getMemoryManager().getBlockCount());
     }
 }
