@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 

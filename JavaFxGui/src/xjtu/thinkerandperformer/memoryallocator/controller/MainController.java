@@ -1,10 +1,20 @@
 package xjtu.thinkerandperformer.memoryallocator.controller;
 
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.HBoxBuilder;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.util.Callback;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.ICommand;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
@@ -94,6 +104,43 @@ abstract class MainController implements Initializable {
         TableColumn<VariableListCell, Integer> variablePositionColumn = new TableColumn<>("Position");
         variablePositionColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getPosition()));
         variableListView.getColumns().setAll(variableNameColumn, variableSizeColumn, variablePositionColumn);
+        variableListView.setRowFactory(p -> {
+            final TableRow<VariableListCell> tableRow = new TableRow<>();
+            ContextMenu contextMenu = new ContextMenu();
+            contextMenu.getItems().addAll(new MenuItem("read"), new MenuItem("write"), new MenuItem("delete"));
+            contextMenu.setOnAction(a -> {
+                MenuItem item = (MenuItem) a.getTarget();
+                String varName = tableRow.getItem().getVariableName();
+                switch (item.getText()) {
+                    case "read":
+                        handleCommand("read " + varName);
+                        break;
+
+                    case "write":
+
+
+                        TextInputDialog textInputDialog = new TextInputDialog();
+                        textInputDialog.setHeaderText("Edit Variable Content");
+                        textInputDialog.setTitle("Edit variable content");
+                        textInputDialog.setContentText("Set the value of " + varName + " to:");
+                        textInputDialog.showAndWait().ifPresent(s -> handleCommand("write " + varName + " = \"" + s + "\""));
+                        break;
+
+                    case "delete":
+                        handleCommand("delete " + varName);
+                        break;
+                }
+
+            });
+
+            // Set context menu on row, but use a binding to make it only show for non-empty rows:
+            tableRow.contextMenuProperty().bind(
+                    Bindings.when(tableRow.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return tableRow;
+        });
 
         // Setup action history view control
         TableColumn<ActionHistoryCell, String> actionNameColumn = new TableColumn<>("Action");
@@ -103,6 +150,36 @@ abstract class MainController implements Initializable {
         TableColumn<ActionHistoryCell, Date> actionTimeColumn = new TableColumn<>("Time");
         actionTimeColumn.setCellValueFactory(p -> new ReadOnlyObjectWrapper<>(p.getValue().getDate()));
         actionHistoryView.getColumns().addAll(actionNameColumn, actionArgsColumn, actionTimeColumn);
+        actionHistoryView.setRowFactory(p -> {
+            final TableRow<ActionHistoryCell> tableRow = new TableRow<>();
+            ContextMenu contextMenu = new ContextMenu();
+            contextMenu.getItems().addAll(new MenuItem("copy command"), new MenuItem("execute"));
+            contextMenu.setOnAction(a -> {
+                MenuItem item = (MenuItem) a.getTarget();
+                String text = item.getText();
+                String action = tableRow.getItem().getActionName() + " " + tableRow.getItem().getActionArgs();
+                switch (text) {
+                    case "copy command":
+                        ClipboardContent clipboardContent = new ClipboardContent();
+                        clipboardContent.putString(action);
+                        Clipboard.getSystemClipboard().setContent(clipboardContent);
+                        break;
+
+                    case "execute":
+                        handleCommand(action);
+                        break;
+                }
+
+            });
+            // Set context menu on row, but use a binding to make it only show for non-empty rows:
+            tableRow.contextMenuProperty().bind(
+                    Bindings.when(tableRow.emptyProperty())
+                            .then((ContextMenu) null)
+                            .otherwise(contextMenu)
+            );
+            return tableRow;
+        });
+
     }
 
     void addConsoleItem(String message, ConsoleCellType type) {
@@ -138,7 +215,7 @@ abstract class MainController implements Initializable {
 
         showMessageBox("Success", "Successfully executed the command: " + command, Alert.AlertType.INFORMATION);
         // Finished Command, add command to history
-        actionHistoryView.getItems().add(new ActionHistoryCell(parsedCommand.getName(), command.trim().replaceFirst(parsedCommand.getName(), "")));
+        actionHistoryView.getItems().add(new ActionHistoryCell(parsedCommand.getName(), command.trim().replaceFirst(parsedCommand.getName(), "").trim()));
 
         // Update the variable list
         updateVariableList();
