@@ -21,6 +21,10 @@ public class MainControllerSequentialImpl extends MainController {
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
+        // Set Read data Listener
+        visualSequentialMemManager.setReadValueListener(s -> addConsoleItem(s, ConsoleCellType.DataOutput));
+
+
         // bind listener to method selection
 
         getSequentialMethodSelection().getSelectionModel().selectedItemProperty().addListener(e ->
