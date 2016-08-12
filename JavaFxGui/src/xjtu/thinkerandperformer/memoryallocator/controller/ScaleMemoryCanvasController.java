@@ -66,21 +66,22 @@ public class ScaleMemoryCanvasController implements Initializable {
         // Bind event handler
         this.canvas.setOnDragDetected(e -> {
             isDrag = true;
-            mousePositionX = e.getSceneX();
-            mousePositionY = e.getSceneY();
+            mousePositionX = e.getScreenX();
+            mousePositionY = e.getScreenY();
         });
         this.canvas.setOnMouseDragged(e -> {
             if (!isDrag) {
                 isDrag = true;
             } else {
-                centerX -= (e.getSceneX() - mousePositionX) / zoomFactor;
-                centerY -= (e.getSceneY() - mousePositionY) / zoomFactor;
+                centerX -= (e.getScreenX() - mousePositionX) / zoomFactor;
+                centerY -= (e.getScreenY() - mousePositionY) / zoomFactor;
                 repaint();
             }
-            mousePositionX = e.getSceneX();
-            mousePositionY = e.getSceneY();
+            mousePositionX = e.getScreenX();
+            mousePositionY = e.getScreenY();
+
         });
-        this.canvas.setOnMouseClicked(e -> {
+        this.canvas.setOnMouseReleased(e -> {
             if (!isDrag) {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     // Left Button (Primary Button)
