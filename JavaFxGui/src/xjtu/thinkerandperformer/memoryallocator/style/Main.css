@@ -1,0 +1,25 @@
+/* Action History View */
+#commandConsoleView .list-cell {
+
+    -fx-background-color: #232323;
+    -fx-text-fill: #ccc;
+    -fx-font-family: Monaco, monospace;
+    -fx-border-color: transparent;
+}
+
+/*Cell Types:  Input, MessageOutput, ErrorOutput, DataOutput*/
+#commandConsoleView .Input {
+    -fx-text-fill: #5e7;
+    -fx-font-style: italic;
+}
+
+#commandConsoleView .MessageOutput {
+    -fx-text-fill: #999;
+}
+
+#commandConsoleView .ErrorOutput {
+    -fx-text-fill: #d75;
+}
+#commandConsoleView .DataOutput {
+    -fx-text-fill: #ddf;
+}

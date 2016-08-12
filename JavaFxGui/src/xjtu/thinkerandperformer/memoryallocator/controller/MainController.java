@@ -5,16 +5,9 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.HBoxBuilder;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.util.Callback;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.Variable;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.ICommand;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
@@ -118,7 +111,6 @@ abstract class MainController implements Initializable {
 
                     case "write":
 
-
                         TextInputDialog textInputDialog = new TextInputDialog();
                         textInputDialog.setHeaderText("Edit Variable Content");
                         textInputDialog.setTitle("Edit variable content");
@@ -178,6 +170,23 @@ abstract class MainController implements Initializable {
                             .otherwise(contextMenu)
             );
             return tableRow;
+        });
+
+        commandConsoleView.setCellFactory(p -> {
+            ListCell<CommandConsoleCell> cell = new ListCell<>();
+            cell.itemProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != null) cell.setText(newValue.getContent());
+                if (oldValue != null && newValue != null && oldValue.getConsoleCellType() == newValue.getConsoleCellType())
+                    return;
+                if (oldValue != null) {
+                    cell.getStyleClass().removeIf(s -> s.equals(oldValue.getConsoleCellType().toString()));
+
+                }
+                if (newValue != null) {
+                    cell.getStyleClass().add(newValue.getConsoleCellType().toString());
+                }
+            });
+            return cell;
         });
 
     }
@@ -273,6 +282,14 @@ abstract class MainController implements Initializable {
         public CommandConsoleCell(String content, ConsoleCellType type) {
             this.content = content;
             this.consoleCellType = type;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public ConsoleCellType getConsoleCellType() {
+            return consoleCellType;
         }
 
         @Override
