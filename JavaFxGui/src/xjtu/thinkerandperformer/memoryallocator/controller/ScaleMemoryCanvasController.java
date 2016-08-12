@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
 
@@ -85,10 +86,10 @@ public class ScaleMemoryCanvasController implements Initializable {
             if (!isDrag) {
                 if (e.getButton() == MouseButton.PRIMARY) {
                     // Left Button (Primary Button)
-                    zoomIn(e.getSceneX(), e.getSceneY());
+                    zoomIn(e.getX(), e.getY());
                 } else if (e.getButton() == MouseButton.SECONDARY) {
                     // Right Button (Secondary Button)
-                    zoomOut(e.getSceneX(), e.getSceneY());
+                    zoomOut(e.getX(), e.getY());
                 }
             }
             isDrag = false;
@@ -128,8 +129,8 @@ public class ScaleMemoryCanvasController implements Initializable {
                 setInterpolator(Interpolator.EASE_BOTH);
                 setOnFinished(e -> {
                     zoomFactor = original + delta;
-                    centerX = ensureCenterX(zoomCenterX - (zoomCenterX - centerX) / zoomFactor, zoomFactor);
-                    centerY = ensureCenterY(zoomCenterY - (zoomCenterY - centerY) / zoomFactor, zoomFactor);
+                    centerX = ensureCenterX(zoomCenterX - (zoomCenterX - centerX) / zoomFactor * original, zoomFactor);
+                    centerY = ensureCenterY(zoomCenterY - (zoomCenterY - centerY) / zoomFactor * original, zoomFactor);
                     repaint();
                     notifyStateChange();
                 });
@@ -138,10 +139,12 @@ public class ScaleMemoryCanvasController implements Initializable {
             @Override
             protected void interpolate(double fraction) {
                 double scale = original + fraction * delta;
+
                 repaint(
-                        ensureCenterX(zoomCenterX - (zoomCenterX - centerX) / scale, scale),
-                        ensureCenterY(zoomCenterY - (zoomCenterY - centerY) / scale, scale),
+                        ensureCenterX(zoomCenterX - (zoomCenterX - centerX) / scale * original, scale),
+                        ensureCenterY(zoomCenterY - (zoomCenterY - centerY) / scale * original, scale),
                         scale);
+
             }
         };
         transition.play();

@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import xjtu.thinkerandperformer.memoryallocator.algorithm.BitBlockInfo;
@@ -58,5 +59,20 @@ class Utility {
                 positionX + size * (0.5 - 0.1 * indexString.length()),
                 positionY + size - 3);
 
+    }
+
+    static void drawDot(GraphicsContext ctx, double x, double y) {
+        drawDot(ctx, x, y, Color.RED);
+    }
+
+    static void drawDot(GraphicsContext ctx, double x, double y, Paint paint) {
+        drawDot(ctx, x, y, 8, paint);
+    }
+
+    static void drawDot(GraphicsContext ctx, double x, double y, double size, Paint paint) {
+        ctx.save();
+        ctx.setFill(paint);
+        ctx.fillRoundRect(x - size / 2, y - size / 2, size, size, size, size);
+        ctx.restore();
     }
 }
