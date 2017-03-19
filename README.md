@@ -1,6 +1,8 @@
 Memory Allocator
 ================
 
+[![Build Status](https://travis-ci.org/Jack-Q/MemoryAllocator.svg?branch=master)](https://travis-ci.org/Jack-Q/MemoryAllocator)
+
 Modules
 -------
 
