@@ -5,7 +5,7 @@ import xjtu.thinkerandperformer.memoryallocator.algorithm.command.Parser;
 
 import java.util.Scanner;
 
-public class TestMemManger {
+public class TestMemManager {
 
     public static void main(String[] args) {
         MemManager mmg = new MemManager();

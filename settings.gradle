@@ -1,0 +1,4 @@
+include ':core', ':gui'
+rootProject.name =  'xjtu.thinkerandperformer.memoryallocator'
+project(':core').name = 'xjtu.thinkerandperformer.memoryallocator.core'
+project(':gui').name = 'xjtu.thinkerandperformer.memoryallocator.gui'

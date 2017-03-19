@@ -95,15 +95,18 @@ public class FrameController implements Initializable {
         // Load main views
         try {
             FXMLLoader mainFxmlLoader;
+            ClassLoader classLoader = this.getClass().getClassLoader();
 
-            mainFxmlLoader = new FXMLLoader(this.getClass().getResource("../view/Main.fxml"));
+            mainFxmlLoader = new FXMLLoader(classLoader.getResource("view/Main.fxml"));
             mainFxmlLoader.setController(sequentialMethodPanelController = new MainControllerSequentialImpl());
             sequentialMethodPanel.getChildren().add(mainFxmlLoader.load());
-            mainFxmlLoader = new FXMLLoader(this.getClass().getResource("../view/Main.fxml"));
+            mainFxmlLoader = new FXMLLoader(classLoader.getResource("view/Main.fxml"));
             mainFxmlLoader.setController(buddyMethodPanelController = new MainControllerBuddyImpl());
             buddyMethodPanel.getChildren().add(mainFxmlLoader.load());
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
 
         // Initialize command line candidates filler
         commandLine.setCellFactory(m -> new ListCell<SuggestionCellModel>() {

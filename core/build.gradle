@@ -1,0 +1,14 @@
+
+mainClassName = 'xjtu.thinkerandperformer.memoryallocator.algorithm.TestMemManager'
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+run {
+    // use standard input as input source for application entry
+    // also use `-q' gradle to remove other output and left error only
+    standardInput = System.in
+}

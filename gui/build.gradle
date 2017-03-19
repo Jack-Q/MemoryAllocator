@@ -1,0 +1,12 @@
+
+mainClassName = 'xjtu.thinkerandperformer.memoryallocator.MemoryAllocator'
+
+jar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+
+dependencies{
+    compile project(':xjtu.thinkerandperformer.memoryallocator.core')
+}
